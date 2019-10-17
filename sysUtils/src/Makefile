@@ -27,20 +27,26 @@ CFLAGS += -fPIC -Wall
 LDFLAGS += -lpthread
 
 TARGET_UTIL_LIB = libsysutils.so
+
 SYSUTIL_SRCS  = sysUtils.c
+SYSUTIL_CPP_SRCS = dmcliUtils.cpp
+
 OBJS_SYSUTIL = $(SYSUTIL_SRCS:.c=.o)
+OBJS_CPP_SYSUTIL = $(SYSUTIL_CPP_SRCS:.cpp=.o)
 
 RM = rm -f
 all: $(TARGET_UTIL_LIB)
 
-$(TARGET_UTIL_LIB): $(OBJS_SYSUTIL)
-	$(CC) -shared $(LDFLAGS) $^ -o $@ -lrt
+$(TARGET_UTIL_LIB): $(OBJS_SYSUTIL) $(OBJS_CPP_SYSUTIL)
+	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
 %.o:%.c
 	$(CC) -c $< $(CFLAGS)  -o $@
+%.o:%.cpp
+	$(CXX) -c $< $(CFLAGS)  -o $@
 uninstall:
 	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET_UTIL_LIB)
 clean:
-	${RM} ${TARGET_UTIL_LIB} ${OBJS_SYSUTIL}
+	${RM} ${TARGET_UTIL_LIB} ${OBJS_SYSUTIL} ${OBJS_CPP_SYSUTIL}
 
 .PHONY: all clean
 
