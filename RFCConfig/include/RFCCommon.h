@@ -49,8 +49,6 @@
 
 /* ------------------- CVR --------------------- */
 //#define RFC_CVR_AUDIO ".RFC_RDKC_CVR_AUDIO.ini"
-#define RFC_CVR_AUDIO "rfcVariable.ini"
-#define RFC_LIVE_AUDIO "rfcVariable.ini"
 #define CVR_AUDIO "CVR_AUDIO"
 #define KVS_ABSTIMESTAMP "KVSCLIP_ABSTIMESTAMP"
 #define KVS_LIVEMODE "KVSCLIP_LIVEMODE"
@@ -68,22 +66,38 @@
 #define OVERLAY_FEATURE         "RDKC_OVERLAY"
 
 /* ----------------------------  OD_FRAMES  ------------------------ */
-#define RFC_OD_FRAMES_UPLOAD	"rfcVariable.ini"
 #define OD_FRAMES_UPLOAD	"RDKC_OD_FRAMES_UPLOAD"
 
 /* ----------------------------  SMART THUMBNAIL  ------------------------ */
-#define RFC_SMART_TN_UPLOAD	"rfcVariable.ini"
 #define SMART_TN_UPLOAD		"SMART_TN_UPLOAD"
 
 /* ----------------------------  JSON Provisioning  ------------------------ */
-#define RFC_FILE                 	   "rfcVariable.ini"
 #define RFC_JSON_FLAG                	   "RFC_ENABLE_RDKC_PROVISIONING_JSON"
 
 /* ----------------------------  Audio Analytic  ------------------------ */
-#define RFC_RDKC_AA             "rfcVariable.ini"
 #define RDKC_AA_ENGINE          "RDKC_AA_ENGINE"
 #define RDKC_AA_UPLOAD_URL      "RDKC_AA_UPLOAD_URL"
 #define RDKC_AA_PCM_UPLOAD      "RDKC_AA_PCM_UPLOAD"
 #define RDKC_AA_CLIP_DURATION   "RDKC_AA_CLIP_DURATION"
+
+/* ---------------------------- WEBPA RFC------------------------ */
+#define RFC_RDKC_CVR_AUDIO "ENABLE_RDKC_CVR_AUDIO"
+#define RFC_RDKC_XCVGMM "ENABLE_RDKC_XCVGMM"
+#define RFC_RDKC_TN_UPLOAD "ENABLE_RDKC_TN_UPLOAD"
+#define RFC_RDKC_SMART_TN_UPLOAD "ENABLE_RDKC_SMART_TN_UPLOAD"
+#define RFC_RDKC_CVR_LITE "ENABLE_RDKC_CVR_LITE"
+#define RFC_RDKC_CVR_KVS "ENABLE_RDKC_CVR_KVS"
+#define RFC_RDKC_LIVE_AUDIO "ENABLE_RDKC_LIVE_AUDIO"
+#define RFC_RDKC_LNF "ENABLE_RDKC_LNF"
+#define RFC_RDKC_OVERLAY "ENABLE_RDKC_OVERLAY"
+#define RFC_RDKC_EVO "ENABLE_RDKC_EVO"
+#define RFC_RDKC_PROVISIONING_JSON "ENABLE_RDKC_PROVISIONING_JSON"
+#define RFC_RDKC_AA "ENABLE_RDKC_AA"
+#define RFC_RDKC_ADVANCED_GOP "ENABLE_RDKC_ADVANCED_GOP"
+#define RFC_RDKC_RESOLUTIONCHANGE "ENABLE_RDKC_RESOLUTIONCHANGE"
+#define RFC_RDKC_HDR "ENABLE_RDKC_HDR"
+#define RFC_XCAM2_SMARTRC "ENABLE_XCAM2_SMARTRC"
+#define RFC_XCAM2_THERMAL_MONITOR "ENABLE_XCAM2_THERMAL_MONITOR"
+#define RFC_RDKC_CONFIGURE_DAYNIGHT "ENABLE_XCAM2_THERMAL_MONITOR"
 
 #endif
