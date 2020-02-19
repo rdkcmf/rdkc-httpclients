@@ -106,11 +106,16 @@ ifeq ($(USE_SMARTRC), yes)
 endif
 
 ifeq ($(USE_KINESIS_PRODUCER), yes)
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-c-producer/src/include
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/client/include
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/client/include/com/amazonaws/kinesis/video/client
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/client/src
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/client/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/state/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/state/include/com/amazonaws/kinesis/video/state
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/state/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/state/tst
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/common/include
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/common/include/com/amazonaws/kinesis/video/client
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/heap/include
@@ -128,13 +133,12 @@ ifeq ($(USE_KINESIS_PRODUCER), yes)
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/view/tst
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-pic/src/utils/include
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-producer/src
-	# CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-c-producer/src/include/com/amazonaws/kinesis/video/cproducer/
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-producer/src/common
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-producer/src/credential-providers
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-producer/opensource/jsoncpp
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-producer/tst
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-gstreamer-plugin
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-gstreamer-plugin/plugin-src/
-	# LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lproducer -lcproducer -llog4cplus
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lproducer -llog4cplus
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lproducer -lcproducer -llog4cplus
+	# LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lproducer -llog4cplus
 endif
