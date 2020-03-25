@@ -1,0 +1,14 @@
+Sample test program performs simple GET request using HTTP client.
+
+Steps to Run:
+1. Run ./http_client_test which uses default polling URL , ca_cert_file and cert_file
+   Default parameters are:
+   url:  https://config-cvr.g.xfinityhome.com/config
+   ca_cert_file: /etc/ssl/certs/CAcerts.pem
+   cert_file: /etc/ssl/certs/client.pem
+
+2. To Run with other url,ca_cert_file and cert_file :
+   Run  ./http_client_test <url> <ca_cert_file>  <cert_file>
+   Provide command line arguments : polling_url, ca_cert_file, cert_file in given order to perform GET request.
+
+3. Response data from server will be printed if request is successful.
