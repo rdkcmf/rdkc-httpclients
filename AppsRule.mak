@@ -102,7 +102,12 @@ ifeq ($(USE_SMARTRC), yes)
 	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/src/amba/packages/data_transfer/
 	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/src/amba/include/arch_s3l
 	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/src/amba
-	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/configMgr/include 
+	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/configMgr/include
+endif
+
+ifeq ($(USE_LIBSYSWRAPPER), yes)
+        CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/libsyswrapper/source/
+        LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/libsyswrapper/source/.libs/  -lsecure_wrapper 
 endif
 
 ifeq ($(USE_KINESIS_PRODUCER), yes)
