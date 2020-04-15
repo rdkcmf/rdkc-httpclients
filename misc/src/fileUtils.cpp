@@ -28,7 +28,7 @@ FileUtils::~FileUtils()
     /* Destructor */
 }
 
-void FileUtils::filePutContents(const string& name, const string& content, bool append = false) 
+void FileUtils::filePutContents(const string &name, const string &content, bool append = false)
 {
     ofstream outfile;
     if (append)
@@ -39,46 +39,45 @@ void FileUtils::filePutContents(const string& name, const string& content, bool 
     outfile.close();
 }
 
-void FileUtils::createConfig(const string& filename)
+void FileUtils::createConfig(const string &filename)
 {
     char buffer[MAX_BUFFER_SIZE] = {'\0'};
-
     filePutContents(filename, buffer, false);
     return;
 }
 
-int FileUtils::readFileContent(const string& filename, char* fileContent)
+int FileUtils::readFileContent(const string &filename, char *fileContent)
 {
     ifstream in(filename.c_str());
     string line, strValue;
     int ret = -1;
 
-    if(in)
+    if (in)
     {
         in.seekg(0, std::ios::end);
         size_t len = in.tellg();
         in.seekg(0);
         std::string contents(len + 1, '\0');
         in.read(&contents[0], len);
-        const char* c = contents.c_str();
+        const char *c = contents.c_str();
         strcpy(fileContent, c);
         ret = 0;
     }
     return ret;
 }
 
-void FileUtils::writeContentToFile(const string& filename, const char* fileContent)
+void FileUtils::writeContentToFile(const string &filename, const char *fileContent)
 {
     fstream ofs;
     ofs.open(filename.c_str(), ios::out | ios::trunc);
-    ofs<<fileContent;
-    ofs.close(); 
+    ofs << fileContent;
+    ofs.close();
 }
 
-int FileUtils::replaceValue(const string& filename, const char* name, const char* value)
+int FileUtils::replaceValue(const string &filename, const char *name, const char *value)
 {
     char fileContent[FILE_SIZE] = {'\0'};
-    if(0 != readFileContent(filename, fileContent))
+    if (0 != readFileContent(filename, fileContent))
         return -1;
 
     string subject(fileContent);
@@ -90,18 +89,17 @@ int FileUtils::replaceValue(const string& filename, const char* name, const char
     regex re(nameRegEx);
 
     string result;
-    regex_replace (back_inserter(result), subject.begin(), subject.end(), re, replaceNameValue);
-
+    regex_replace(back_inserter(result), subject.begin(), subject.end(), re, replaceNameValue);
     writeContentToFile(filename, result.c_str());
 }
 
-bool FileUtils::exists (const string& filename)
+bool FileUtils::exists(const string &filename)
 {
-    struct stat buffer;   
-    return (stat (filename.c_str(), &buffer) == 0); 
+    struct stat buffer;
+    return (stat(filename.c_str(), &buffer) == 0);
 }
 
-bool FileUtils::getConfiguration(const string& filename, const char* name, char* value)
+bool FileUtils::getConfiguration(const string &filename, const char *name, char *value)
 {
     ifstream fin(filename.c_str());
     string line, strValue;
@@ -110,18 +108,21 @@ bool FileUtils::getConfiguration(const string& filename, const char* name, char*
 
     sprintf(strNameEq, "%s=", name);
 
-    while( getline( fin, line ) ) 
+    while (getline(fin, line))
     {
-        if( line.find( strNameEq ) != string::npos ) // if found in line then
+        if (line.find(strNameEq) != string::npos) // if found in line then
         {
-            strValue = line.substr(line.find("=") + 1) ;            
-            
-            const char* c = strValue.c_str();
-            if ( strlen(c) != 0 ) {
-                strncpy(value, c,strlen(c));
+            strValue = line.substr(line.find("=") + 1);
+
+            const char *c = strValue.c_str();
+            if (strlen(c) != 0)
+            {
+                strncpy(value, c, strlen(c));
                 value[strlen(c)] = '\0';
                 bFound = true;
-            } else {
+            }
+            else
+            {
                 strcpy(value, "");
                 value[strlen(value)] = '\0';
                 bFound = false;
@@ -131,18 +132,18 @@ bool FileUtils::getConfiguration(const string& filename, const char* name, char*
     return bFound;
 }
 
-void FileUtils::setConfiguration(const string& filename, const char* name, const char* value)
+void FileUtils::setConfiguration(const string &filename, const char *name, const char *value)
 {
     char prevValue[SIZE] = {'\0'};
-    if(!exists(filename))
+    if (!exists(filename))
     {
         createConfig(filename);
     }
     else
     {
-        if(true == getConfiguration(filename, name, prevValue))
+        if (true == getConfiguration(filename, name, prevValue))
         {
-            if(strcmp(prevValue, value) != 0)
+            if (strcmp(prevValue, value) != 0)
             {
                 replaceValue(filename, name, value);
             }
@@ -150,20 +151,99 @@ void FileUtils::setConfiguration(const string& filename, const char* name, const
         }
     }
 
-    if(strcmp(prevValue, "") == 0)
+    if (strcmp(prevValue, "") == 0)
     {
         replaceValue(filename, name, value);
         return;
-    }else {
+    }
+    else
+    {
         char buffer[MAX_BUFFER_SIZE] = {'\0'};
-        sprintf(buffer, "%s=%s\n",name,value);
+        sprintf(buffer, "%s=%s\n", name, value);
 
         filePutContents(filename, buffer, true);
         return;
-   }
+    }
     char buffer[MAX_BUFFER_SIZE] = {'\0'};
-    sprintf(buffer, "%s=%s\n",name,value);
+    sprintf(buffer, "%s=%s\n", name, value);
 
     filePutContents(filename, buffer, true);
     return;
+}
+bool FileUtils::loadFromFile(const std::string &filename)
+{
+    m_data.clear();
+    m_filename = filename;
+    return read();
+}
+
+bool FileUtils::read()
+{
+    std::ifstream in(m_filename.c_str());
+    if (!in.is_open())
+    {
+        std::cerr << "Error: Unable to open settings file \"" << m_filename << "\" for reading!" << std::endl;
+        return false;
+    }
+
+    std::string line;
+    while (std::getline(in, line))
+    {
+        // parse line
+        std::pair<std::string, std::string> keyValuePair = parseLine(line);
+
+        if (!keyValuePair.first.empty())
+        {
+            // if the line is not empty or a comment save it to the map
+            m_data[keyValuePair.first] = keyValuePair.second;
+        }
+    }
+
+    in.close();
+    return true;
+}
+
+/**
+ * This method parses a line from our format ("key = value") into a std::pair<std::string, std::string>
+ * containing th key and the value.
+ * If the line is empty or a comment (starts with a '#') an empty pair is returned.
+ */
+std::pair<std::string, std::string> FileUtils::parseLine(const std::string &line) const
+{
+    if (line.size() > 0 && line[0] != '#')
+    {
+        size_t index = 0;
+        // trim leading whitespace
+        while (std::isspace(line[index], m_locale))
+            index++;
+        // get the key string
+        const size_t beginKeyString = index;
+        while (!std::isspace(line[index], m_locale) && line[index] != '=')
+            index++;
+        const std::string key = line.substr(beginKeyString, index - beginKeyString);
+
+        // skip the assignment
+        while (std::isspace(line[index], m_locale) || line[index] == '=')
+            index++;
+
+        // get the value string
+        const std::string value = line.substr(index, line.size() - index);
+
+        // return the key value pair
+        return std::make_pair(key, value);
+    }
+    // if this line is emtpy or a comment, return an empty pair
+    return std::make_pair(std::string(), std::string());
+}
+
+void FileUtils::print() const
+{
+    for (std::map<std::string, std::string>::const_iterator it = m_data.begin(); it != m_data.end(); ++it)
+        std::cout << it->first << " = " << it->second << '\n';
+#if 0
+    for(auto& element: m_data)
+        std::cout << element.first << " = " << element.second<< std::endl;
+    
+    std::cout << std::endl << "Size: " << m_data.size() << std::endl;
+#endif
 }

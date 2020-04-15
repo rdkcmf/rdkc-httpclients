@@ -17,24 +17,19 @@
 # limitations under the License.
 ##########################################################################
 
-SUBDIRS += httpclient
-SUBDIRS += RFCConfig
-SUBDIRS += dynamicLogging 
-SUBDIRS += sysUtils
-ifneq ($(XCAM_MODEL), XHB1)
-SUBDIRS += streamUtils
-endif
-#SUBDIRS += configUtils
-SUBDIRS += misc
-SUBDIRS += watchDog
+modules := src
 
 all:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@ || exit 1; \
-	done
+	@for m in $(modules); do echo $$m; make -C $$m $@ || exit 1; done
 
-install clean uninstall mrproper:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@; \
-	done
+clean:
+	@for m in $(modules); do echo $$m; make -C $$m $@ || exit 1; done
+
+install:
+	@for m in $(modules); do echo $$m; make -C $$m $@ || exit 1; done
+
+uninstall:
+	@for m in $(modules); do echo $$m; make -C $$m $@ || exit 1; done
+
+.PHONY: all clean install uninstall
 

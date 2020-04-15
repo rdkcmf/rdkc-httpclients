@@ -19,12 +19,13 @@
 
 include ${PROJ_PRERULE_MAK_FILE}
 
-CFLAGS += -fstack-protector
+CFLAGS += -fstack-protector -Wno-error
 CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/rdklogger/include
+CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/opensource/include
 LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rdklogger/src/.libs/ -lrdkloggers
 
-LIBFLAGS += -L${RDK_PROJECT_ROOT_PATH}/opensource/lib -lssl -lcrypto -ljansson
 LIBFLAGS += -Wl,-rpath,$(RDK_PROJECT_ROOT_PATH)/opensource/lib
+LIBFLAGS += -L${RDK_PROJECT_ROOT_PATH}/opensource/lib -lssl -lcrypto -ljansson
 
 ifeq ($(USE_OPENCV), yes)
 	export PKG_CONFIG_PATH=$(RDK_PROJECT_ROOT_PATH)/opensource/lib/pkgconfig
@@ -37,15 +38,23 @@ ifeq ($(USE_WATCHDOG), yes)
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -llog4c
 endif
 
+ifeq ($(USE_CJSON), yes)
+	CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}opensource/include/cjson/
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
+endif
+
 ifeq ($(USE_HTTPCLIENT), yes)
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -llog4c -lz
+	LIBFLAGS += -L${RDK_PROJECT_ROOT_PATH}/opensource/lib -lssl -lcrypto -ljansson
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/utility/httpclient
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/utility/httpclient -lhttpclient
 endif
 
 ifeq ($(USE_RTMESSAGE), yes)
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -lcjson
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/dataProvider/
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -ldataProvider
+        LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
 endif
 
 ifeq ($(USE_PLUGINS), yes)
@@ -77,6 +86,11 @@ ifeq ($(USE_SYSUTILS), yes)
 	LIBFLAGS    += -L$(RDK_PROJECT_ROOT_PATH)/utility/sysUtils/src -lsysutils
 endif
 
+ifeq ($(USE_CONFIGUTILS), yes)
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/utility/misc/include
+	LIBFLAGS    += -L$(RDK_PROJECT_ROOT_PATH)/utility/misc/src/ -lmiscutils 
+endif
+
 ifeq ($(USE_BREAKPAD), yes)
 	CFLAGS += -DBREAKPAD
 	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/breakpadwrap/
@@ -96,6 +110,31 @@ endif
 ifeq ($(USE_STREAMUTILS), yes)
 	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/utility/streamUtils/include
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/utility/streamUtils/src -lstreamutils
+endif
+
+ifeq ($(USE_WIFIHAL), yes)
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/wifi-hal-generic/include
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/wifi-hal-generic/src/.libs/ -lwifihal
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/ -lwpa_client
+endif
+
+ifeq ($(USE_BLE), yes)
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/ -lblelnf
+endif
+
+ifeq ($(USE_CONSUMER), yes)
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/camera-hal/streamer/xBroker/
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/camera-hal/streamer/xBroker/xConsumer
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/camera-hal/streamer
+	LIBFLAGS   += -L$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/vendor/img/fs/shadow_root/usr/lib -lstreamerconsumer
+endif
+
+ifeq ($(USE_PRODUCER), yes)
+	CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/camera-hal/streamer/
+	CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/camera-hal/streamer/xBroker/
+	CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/camera-hal/streamer/xBroker/xProducer/include
+	CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/camera-hal/streamer/xaudio
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/camera-hal/streamer/xBroker/xProducer/lib -lstreamerproducer
 endif
 
 ifeq ($(USE_SMARTRC), yes)

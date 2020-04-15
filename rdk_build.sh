@@ -53,10 +53,8 @@ INITIAL_ARGS=$@
 
 if [ "$XCAM_MODEL" == "SCHC2" ]; then
 . ${RDK_PROJECT_ROOT_PATH}/build/components/amba/sdk/setenv2
-elif [ "$XCAM_MODEL" == "SERXW3" ] || [ "$XCAM_MODEL" == "SERICAM2" ]; then
+else 
 . ${RDK_PROJECT_ROOT_PATH}/build/components/sdk/setenv2
-else #No Matching platform
-    echo "Source environment that include packages for your platform. The environment variables PROJ_PRERULE_MAK_FILE should refer to the platform s PreRule make"
 fi
 
 export FSROOT=$RDK_FSROOT_PATH
@@ -146,7 +144,9 @@ function install()
     if [ -f "./sysUtils/src/libsysutils.so" ]; then
 	cp -rvf "./sysUtils/src/libsysutils.so" $FSROOT/usr/lib
     fi
-
+    if [ -f "./configUtils/src/libconfigutils.so" ]; then
+        cp -rvf "./configUtils/src/libconfigutils.so" $FSROOT/usr/lib
+    fi
     if [ -f "./streamUtils/src/libstreamutils.so" ]; then
 	cp -rvf "./streamUtils/src/libstreamutils.so" $FSROOT/usr/lib
     fi

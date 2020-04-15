@@ -24,7 +24,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+#include <time.h>
 /* string data type */
 struct result_string
 {
@@ -63,4 +63,12 @@ int getCameraVersionNum(char* version_num);
 int getDefaultGatewayAndIface(in_addr_t * addr, char *interface);
 
 char* getDefaultGateway();
+
+time_t getCurrentTime(time_t *arg);
+
+unsigned int compareTimestamp(unsigned int new_ts, unsigned int old_ts);
+/**
+* returns pid for the process name
+*/
+int getProcessId(char* processName);
 #endif
