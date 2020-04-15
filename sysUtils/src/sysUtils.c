@@ -27,7 +27,7 @@
 #include <net/if.h>
 #include <ifaddrs.h>
 #include <errno.h>
-
+#include <stdint.h>
 #include "sysUtils.h"
 
 #define UTILS_ASSERT_NOT_NULL(P)       	if ((P) == NULL) return 1
@@ -214,10 +214,15 @@ int setConfValue(char* conf_file, char* conf_param, char* conf_value)
 int isConfigValueChanged(char* conf_file, char* attribute,const char* value)
 {
   int isChanged = 1;
-  char data[DATA_LEN];
+  char data[DATA_LEN] = {'\0'};
   int  isFound = 1;
 
   int ret = getConfValue(conf_file, attribute, data);
+  if(ret)
+  {
+	printf("Conf file %s not found", conf_file);
+	return isChanged;
+  }
   if (data != NULL)
   {
     printf("\nExisting Value : %s", data);
@@ -568,4 +573,59 @@ char* getDefaultGateway()
     return inet_ntoa(*(struct in_addr *) &addr);
   else
     return NULL;
+}
+
+/**
+* Returns the current time encoded as a time_t object
+**
+*/
+time_t getCurrentTime(time_t *arg)
+{
+	if(arg != NULL)
+	{
+		time_t result = time(arg);
+	
+		if(result != (time_t)(-1))
+		{
+			//printf("The current time is %s(%jd seconds since the Epoch)\n",asctime(gmtime(&result)), (intmax_t)result);
+			return  (intmax_t)result;
+		}
+		return (time_t)(-1);
+	}
+	struct timespec curr_time;
+	
+	if(clock_gettime(CLOCK_MONOTONIC, &curr_time) == -1)
+	{
+		perror("Error in getting monotonic linear time");
+		return (time_t)(-1);
+	}
+	return curr_time.tv_sec;
+}
+
+unsigned int compareTimestamp(unsigned int new_ts, unsigned int old_ts)
+{
+	if(new_ts <  old_ts)
+		return (0xffffffff - old_ts + new_ts);
+	else
+		return (new_ts - old_ts);
+}
+
+int getProcessId(char* processName)
+{
+    FILE *inFp = NULL;
+    char command[BUFFER_SIZE] = {'\0'};
+    int pid = 0;
+
+    if (processName == NULL) {
+
+        return pid;
+    }
+
+    sprintf(command, "pidof %s", processName);
+    if(!(inFp = popen(command, "r"))){
+        return pid;
+    }
+    fscanf(inFp,"%d",&pid);
+    pclose(inFp);
+    return pid;
 }
