@@ -155,6 +155,9 @@ function install()
         cp -rvf "./misc/src/libmiscutils.so" $FSROOT/usr/lib
     fi
 
+    if [ -f "./watchDog/watchDogTimer" ]; then
+        cp -rvf "./watchDog/watchDogTimer" $FSROOT/usr/bin
+    fi
     echo "utility Installation is done"
 }
 

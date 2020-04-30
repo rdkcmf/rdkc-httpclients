@@ -17,21 +17,33 @@
 # limitations under the License.
 ##########################################################################
 
-SUBDIRS += httpclient
-SUBDIRS += RFCConfig
-SUBDIRS += dynamicLogging 
-SUBDIRS += sysUtils
-SUBDIRS += streamUtils
-SUBDIRS += misc
-SUBDIRS += watchDog
+CURRENTPATH = $(PWD)
+USE_WATCHDOG = yes
 
-all:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@ || exit 1; \
-	done
+include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
-install clean uninstall mrproper:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@; \
-	done
+CFLAGS  += -I./
+CFLAGS  += -fPIC -Wall -fpermissive
 
+SRC     += watchDogTimer.cpp Main.cpp
+
+OBJ      = $(SRC:.cpp=.o)
+
+TARGET     =   watchDogTimer
+
+install: $(TARGET)
+all: $(TARGET)
+RM = rm
+
+%.o:%.cpp
+	$(CXX) -c $< $(CFLAGS)  -o $@ $(LIBS)
+
+$(TARGET): $(OBJ)
+	$(CXX) $(CFLAGS) -o $(@) $^ $(LIBFLAGS)
+	$(STRIP) $@
+
+uninstall:
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/bin/$(TARGET)
+
+clean:
+	$(RM) -rf $(OBJ) *~ $(TARGET)
