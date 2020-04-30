@@ -32,6 +32,11 @@ ifeq ($(USE_OPENCV), yes)
 	LIBFLAGS += `pkg-config --libs opencv`
 endif
 
+ifeq ($(USE_WATCHDOG), yes)
+	LIBFLAGS = -lpthread -L$(RDK_PROJECT_ROOT_PATH)/rdklogger/src/.libs/ -lrdkloggers
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -llog4c
+endif
+
 ifeq ($(USE_HTTPCLIENT), yes)
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -llog4c -lz
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/utility/httpclient
