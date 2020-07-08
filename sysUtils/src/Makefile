@@ -18,13 +18,15 @@
 ##########################################################################
 
 include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
-LDFLAGS = $(LIBFLAGS)
+#LDFLAGS = $(LIBFLAGS)
 
 INCPATH += ../include
 
 CFLAGS += -I${INCPATH}
 CFLAGS += -fPIC -Wall
-LDFLAGS += -lpthread
+LDFLAGS := -lpthread
+LDFLAGS += -L$(PROJ_ROOT)/share/libsccomm/bin -lsccomm
+LDFLAGS += -L${PROJ_ROOT}/vendor/img/fs/shadow_root/usr/lib -lmxml
 
 TARGET_UTIL_LIB = libsysutils.so
 
