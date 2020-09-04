@@ -629,3 +629,67 @@ int getProcessId(char* processName)
     pclose(inFp);
     return pid;
 }
+
+/**
+* @description: Set/Get entire content of a file.
+* @param[in]  : filename - File name with path to get/set value
+* @param[in]  : action - Action to perform. Should be "get" or "set"
+* @param      : value - Value to get/set. This is a [out] param in case of "get" and [in] param in case of set
+* @return     : 0 in case of success, 1 if failure
+*/
+int getSetFileContent(char* filename, char* action, char* value)
+{
+     FILE *fp = NULL;
+     if (strcmp(action, "get") == 0)
+     {
+         int contentsize;
+         fp = fopen(filename, "rb");
+         if(NULL == fp)
+         {
+           printf("Error in opening file");
+           return 1;
+         }
+         else
+         {
+           fseek(fp, 0L, SEEK_END);
+           contentsize = ftell(fp);
+           fseek(fp, 0, SEEK_SET);
+           printf("File content - read content size - %d\n", contentsize);
+           fread(value, contentsize, 1 ,fp);
+           if(NULL != fp)
+           {
+             fclose(fp);
+             fp = NULL;
+           }
+           return 0;
+        }
+     }
+     else if (strcmp(action, "set") == 0)
+     {
+         if(NULL != value)
+         {
+           printf("Value to set (%s)\n", value);
+           fp = fopen(filename ,"wb");
+           if(fp)
+           {
+             printf("Saving value to location : %s\n", filename);
+             fwrite(value, sizeof(char), strlen(value), fp);
+             if (NULL != fp)
+             {
+               fclose(fp);
+               fp = NULL;
+             }
+             return 0;
+           }
+           else{
+             printf("Failed to open file. Skipping save\n");
+             return 1;
+           }
+         }
+         else
+         {
+           printf("Value to save is NULL...\n");
+           return 1;
+         }
+     }
+}
