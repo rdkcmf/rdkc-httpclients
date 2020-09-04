@@ -71,4 +71,6 @@ unsigned int compareTimestamp(unsigned int new_ts, unsigned int old_ts);
 * returns pid for the process name
 */
 int getProcessId(char* processName);
+
+int getSetFileContent(char* filename, char* action, char* value);
 #endif
