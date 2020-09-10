@@ -464,12 +464,14 @@ int HttpClient::post(const char *url, const char *data, long *response_code)
 		return -1;
 	}
 	curlEasyHandle_reset();
-	curlEasyHandle_initialize(url);
-	//curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
-	curl_easy_setopt(curlEasyHandle, CURLOPT_POSTFIELDS, responseData);
+	curlEasyHandle_initialize_mutualtls(url);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_POST, 1L);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_POSTFIELDSIZE, 0L);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_CONNECTTIMEOUT, 10L);
 	curl_easy_setopt(curlEasyHandle, CURLOPT_HTTPHEADER, curlSlist);
-	curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEFUNCTION, write_response);
-	curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEDATA, this);
+	//curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEFUNCTION, write_response);
+	//curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEDATA, this);
 
 	struct curl_slist *list_item;
 	list_item = curlSlist;
