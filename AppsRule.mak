@@ -38,6 +38,19 @@ ifeq ($(USE_WATCHDOG), yes)
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -llog4c
 endif
 
+ifeq ($(USE_SSHUTIL), yes)
+    CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/rdklogger/include
+    CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/opensource/include
+    CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/libexchanger/rtmessage
+    CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/libexchanger/src
+    LIBFLAGS = -L$(RDK_PROJECT_ROOT_PATH)/libexchanger/rtmessage/ -lrtMessage -Wl,-rpath-link=${RDK_PROJECT_ROOT_PATH}/libexchanger/Release/src
+    LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -lspake2plus
+    LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lssl -lcrypto
+    LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
+    LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rdklogger/src/.libs/ -lrdkloggers
+    LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -llog4c -lz
+endif
+
 ifeq ($(USE_CJSON), yes)
 	CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}opensource/include/cjson/
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson

@@ -17,19 +17,9 @@
 # limitations under the License.
 ##########################################################################
 
-SUBDIRS += httpclient
-SUBDIRS += RFCConfig
-SUBDIRS += dynamicLogging 
-SUBDIRS += sysUtils
-ifeq ($(XCAM_MODEL), SCHC2)
-SUBDIRS += xwdynamicLogging
-endif
-ifneq ($(XCAM_MODEL), XHB1)
-SUBDIRS += streamUtils
-endif
-#SUBDIRS += configUtils
-SUBDIRS += misc
-SUBDIRS += watchDog
+SUBDIRS += app
+#SUBDIRS += util
+#SUBDIRS += test
 
 all:
 	@for i in `echo $(SUBDIRS)`; do \

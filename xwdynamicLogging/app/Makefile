@@ -17,27 +17,31 @@
 # limitations under the License.
 ##########################################################################
 
-SUBDIRS += httpclient
-SUBDIRS += RFCConfig
-SUBDIRS += dynamicLogging 
-SUBDIRS += sysUtils
-ifeq ($(XCAM_MODEL), SCHC2)
-SUBDIRS += xwdynamicLogging
-endif
-ifneq ($(XCAM_MODEL), XHB1)
-SUBDIRS += streamUtils
-endif
-#SUBDIRS += configUtils
-SUBDIRS += misc
-SUBDIRS += watchDog
+# Add dependent libraries
+#USE_RTMESSAGE = yes
+SUPPORT_MXML = yes
 
-all:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@ || exit 1; \
-	done
+include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
-install clean uninstall mrproper:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@; \
-	done
+SRC = rdkDynamicLoggingApp.cpp
+OBJ = $(SRC:.cpp=.o)
+
+LIBS += $(LIBFLAGS)
+LIBS += -L${RDK_PROJECT_ROOT_PATH}/libexchanger/rtmessage -lrtMessage -Wl,-rpath-link=${RDK_PROJECT_ROOT_PATH}/libexchanger/Release/src
+CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/libexchanger/rtmessage
+TARGET = xwenableLogging
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CXX) $(CFLAGS) $(LIBS) $^ -o $(@)
+
+$(OBJ): $(SRC)
+	$(CXX) -c $^  $(CFLAGS) -o $(@)
+
+uninstall:
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET)
+    
+clean:
+	$(RM) -rf $(OBJ) *~ $(TARGET)
 

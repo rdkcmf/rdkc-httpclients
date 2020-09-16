@@ -141,6 +141,10 @@ function install()
         cp -rvf "./dynamicLogging/app/enableLogging" $RDK_SDROOT/usr/local/bin
     fi
 
+    if [ -f "./xwdynamicLogging/app/xwenableLogging" ]; then
+        cp -rvf "./xwdynamicLogging/app/xwenableLogging" $RDK_SDROOT/usr/local/bin
+    fi
+
     if [ -f "./sysUtils/src/libsysutils.so" ]; then
 	cp -rvf "./sysUtils/src/libsysutils.so" $FSROOT/usr/lib
     fi
