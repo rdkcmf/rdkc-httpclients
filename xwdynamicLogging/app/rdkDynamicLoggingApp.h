@@ -1,3 +1,4 @@
+/**
 ##########################################################################
 # If not stated otherwise in this file or this component's LICENSE
 # file the following copyright and licenses apply:
@@ -16,28 +17,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
+**/
+#ifndef __RDK_DYNAMIC_LOGGING_APP__
+#define __RDK_DYNAMIC_LOGGING_APP__
 
-SUBDIRS += httpclient
-SUBDIRS += RFCConfig
-SUBDIRS += dynamicLogging 
-SUBDIRS += sysUtils
-ifeq ($(XCAM_MODEL), SCHC2)
-SUBDIRS += xwdynamicLogging
-endif
-ifneq ($(XCAM_MODEL), XHB1)
-SUBDIRS += streamUtils
-endif
-#SUBDIRS += configUtils
-SUBDIRS += misc
-SUBDIRS += watchDog
+#include <stdio.h>
+#include <stdlib.h>
 
-all:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@ || exit 1; \
-	done
+#include "rtConnection.h"
+#include "rtLog.h"
+#include "rtMessage.h"
+#include "rdk_debug.h"
 
-install clean uninstall mrproper:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@; \
-	done
+#define RDKC_SUCCESS 0
+#define RDKC_FAILURE -1
 
+#define APP_ENABLE_DYNAMIC_LOG "APP_ENABLE_DYNAMIC_LOG"
+#define APP_ENABLE_DYNAMIC_LOG_ADDRESS "tcp://127.0.0.1:10001"
+
+/* Class for enabling dynamic logging */
+class EnableLogging {
+
+	public:
+		EnableLogging();
+		~EnableLogging();
+		int initializeMessage();
+		int sendMessage(char* module, char* logLevel);
+
+	private:
+		rtConnection connection;
+		rtMessage req;
+		rtMessage res;
+		rtError err;
+};
+
+#endif //__RDK_DYNAMIC_LOGGING_APP__

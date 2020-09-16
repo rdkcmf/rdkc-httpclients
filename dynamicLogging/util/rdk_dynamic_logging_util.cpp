@@ -74,7 +74,7 @@ void* RdkDynamicLogging::rtMessageDynamicLogReceive(void *args)
 	while (1) {
     		rtError err = rtConnection_Dispatch(connection);
     		if (err != RT_OK) {
-      			RDK_LOG( RDK_LOG_INFO,"LOG.RDK.DYNAMICLOG","%s(%d): Dispatch Error: %s", __FILE__, __LINE__, rtStrError(err));
+      			RDK_LOG( RDK_LOG_DEBUG,"LOG.RDK.DYNAMICLOG","%s(%d): Dispatch Error: %s", __FILE__, __LINE__, rtStrError(err));
 		}
   	}
 }
