@@ -23,10 +23,10 @@ SUPPORT_MXML = yes
 
 include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
-LDFLAGS += "-ldl"
+LDFLAGS = "-ldl"
 
 CFLAGS  += "-lrt"
-CFLAGS  += -fPIC -Wall
+CFLAGS  += -g -fPIC -Wall
 
 LIBS += $(LIBFLAGS)
 
@@ -36,25 +36,37 @@ SRC_TEST     += HttpClientTest.cpp
 OBJ      = $(SRC:.cpp=.o)
 OBJ_TEST = $(SRC_TEST:.cpp=.o)
 
-INSTPROGS +=   libhttpclient.so
+RELEASE_TARGET +=   libhttpclient.so
+DEBUG_TARGET +=   libhttpclient_debug.so
 TARGET     =   http_client_test
 
-install: $(INSTPROGS)
-all: $(INSTPROGS) $(TARGET)
+install: $(RELEASE_TARGET)
+ifneq ($(XCAM_MODEL), XHB1)
+	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
+	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
+	echo "Debug symbol created for $(RELEASE_TARGET)"
+endif
+
+all: $(RELEASE_TARGET) $(TARGET) $(DEBUG_TARGET) install
 RM = rm
 
 %.o:%.cpp
 	$(CXX) -c $< $(CFLAGS)  -o $@
 
-$(INSTPROGS): $(OBJ)
+$(RELEASE_TARGET): $(OBJ)
+	$(CXX) $(CFLAGS) $(LDFLAGS) $^ -shared -o $(@)
+	$(STRIP) $(RELEASE_TARGET)
+
+$(DEBUG_TARGET): $(OBJ)
 	$(CXX) $(CFLAGS) $(LDFLAGS) $^ -shared -o $(@)
 
 $(TARGET): $(OBJ) $(OBJ_TEST)
 	$(CXX) $(CFLAGS) -o $(@) $^ $(LIBS) $(LDFLAGS) -lhttpclient
+	$(STRIP) $(TARGET)
 
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(INSTPROGS)
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)
 
 
 clean:
-	$(RM) -rf $(OBJ) $(OBJ_TEST) *~ $(INSTPROGS) $(TARGET)
+	$(RM) -rf $(OBJ) $(OBJ_TEST) *~ $(RELEASE_TARGET) $(DEBUG_TARGET) $(TARGET)
