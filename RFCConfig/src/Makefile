@@ -21,25 +21,38 @@ include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
 INCPATH += ../include
 CFLAGS += $(addprefix -I, $(INCPATH))
-CFLAGS += -fPIC -Wall
-LDFLAGS += -lpthread
+CFLAGS += -g -fPIC -Wall
+LDFLAGS = -lpthread
 
-TARGET_RFC_LIB = librfcconfig.so
+RELEASE_TARGET = librfcconfig.so
+DEBUG_TARGET = librfcconfig_debug.so
 SRCS_CPP = RFCConfigAPI.cpp RFCConfig.cpp
 OBJS_CPP = $(SRCS_CPP:.cpp=.o)
 
 RM = rm -f
-all: $(TARGET_RFC_LIB)
+all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 
-$(TARGET_RFC_LIB): $(OBJS_CPP)
+$(RELEASE_TARGET): $(OBJS_CPP)
 	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
+	$(STRIP) $(RELEASE_TARGET)
+
+$(DEBUG_TARGET): $(OBJS_CPP)
+	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
+
 %.o:%.cpp
 	$(CXX) -c $< $(CFLAGS)  -o $@
 
+install:
+ifneq ($(XCAM_MODEL), XHB1)
+	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
+	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
+	echo "Debug symbol created for $(RELEASE_TARGET)"
+endif
+
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET_RFC_LIB)
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)
 clean:
-	-${RM} ${TARGET_RFC_LIB} ${OBJS_CPP}
+	-${RM} ${RELEASE_TARGET} $(DEBUG_TARGET) ${OBJS_CPP}
 
 .PHONY: all clean
 

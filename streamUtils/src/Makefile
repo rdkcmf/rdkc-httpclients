@@ -26,26 +26,40 @@ include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 INCPATH += ../include
 
 CFLAGS += -I${INCPATH}
-CFLAGS += -fPIC -Wall
+CFLAGS += -g -fPIC -Wall
 
 LDFLAGS = $(LIBFLAGS)
 LDFLAGS += -lpthread
 
-TARGET_UTIL_LIB = libstreamutils.so
+RELEASE_TARGET = libstreamutils.so
+DEBUG_TARGET = libstreamutils_debug.so
 STREAMUTIL_SRCS  = streamUtils.c
 OBJS_STREAMUTIL = $(STREAMUTIL_SRCS:.c=.o)
 
 RM = rm -f
-all: $(TARGET_UTIL_LIB)
+all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 
-$(TARGET_UTIL_LIB): $(OBJS_STREAMUTIL)
+$(RELEASE_TARGET): $(OBJS_STREAMUTIL)
 	$(CC) -shared $(LDFLAGS) $^ -o $@ -lrt
+	$(STRIP) $(RELEASE_TARGET)
+
+$(DEBUG_TARGET): $(OBJS_STREAMUTIL)
+	$(CC) -shared $(LDFLAGS) $^ -o $@ -lrt
+
 %.o:%.c
 	$(CC) -c $< $(CFLAGS)  -o $@
+
+install:
+ifneq ($(XCAM_MODEL), XHB1)
+	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
+	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
+	echo "Debug symbol created for $(RELEASE_TARGET)"
+endif
+
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET_UTIL_LIB)
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)
 clean:
-	${RM} ${TARGET_UTIL_LIB} ${OBJS_STREAMUTIL}
+	${RM} ${RELEASE_TARGET} $(DEBUG_TARGET) ${OBJS_STREAMUTIL}
 
 .PHONY: all clean
 

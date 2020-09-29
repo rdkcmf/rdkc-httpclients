@@ -19,31 +19,42 @@
 
 CURRENTPATH = $(PWD)
 USE_WATCHDOG = yes
+USE_BREAKPAD = yes
 
 include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
 CFLAGS  += -I./
-CFLAGS  += -fPIC -Wall -fpermissive
+CFLAGS  += -g -fPIC -Wall -fpermissive
 
 SRC     += watchDogTimer.cpp Main.cpp
 
 OBJ      = $(SRC:.cpp=.o)
 
-TARGET     =   watchDogTimer
+RELEASE_TARGET     =   watchDogTimer
+DEBUG_TARGET     =   watchDogTimer_debug
 
-install: $(TARGET)
-all: $(TARGET)
+install: $(RELEASE_TARGET)
+ifneq ($(XCAM_MODEL), XHB1)
+	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
+	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
+	echo "Debug symbol created for $(RELEASE_TARGET)"
+endif
+
+all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 RM = rm
 
 %.o:%.cpp
 	$(CXX) -c $< $(CFLAGS)  -o $@ $(LIBS)
 
-$(TARGET): $(OBJ)
+$(RELEASE_TARGET): $(OBJ)
 	$(CXX) $(CFLAGS) -o $(@) $^ $(LIBFLAGS)
 	$(STRIP) $@
 
+$(DEBUG_TARGET): $(OBJ)
+	$(CXX) $(CFLAGS) -o $(@) $^ $(LIBFLAGS)
+
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/bin/$(TARGET)
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/bin/$(RELEASE_TARGET)
 
 clean:
-	$(RM) -rf $(OBJ) *~ $(TARGET)
+	$(RM) -rf $(OBJ) *~ $(RELEASE_TARGET) $(DEBUG_TARGET)

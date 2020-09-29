@@ -24,24 +24,38 @@ INCPATH += ../include
 
 CFLAGS += -I${INCPATH}
 CFLAGS += -fPIC -Wall
-CFLAGS += -std=c++11
-LDFLAGS += -lpthread
+CFLAGS += -g -std=c++11
+LDFLAGS = -lpthread
 
-TARGET_UTIL_LIB = libmiscutils.so
+RELEASE_TARGET = libmiscutils.so
+DEBUG_TARGET = libmiscutils_debug.so
 MISCUTILS_SRCS  = stringUtils.cpp fileUtils.cpp
 OBJS_MISCUTILS = $(MISCUTILS_SRCS:.cpp=.o)
 
 RM = rm -f
-all: $(TARGET_UTIL_LIB)
+all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 
-$(TARGET_UTIL_LIB): $(OBJS_MISCUTILS)
+$(RELEASE_TARGET): $(OBJS_MISCUTILS)
 	$(CC) -shared $(LDFLAGS) $^ -o $@ -lrt
+	$(STRIP) $(RELEASE_TARGET)
+
+$(DEBUG_TARGET): $(OBJS_MISCUTILS)
+	$(CC) -shared $(LDFLAGS) $^ -o $@ -lrt
+
 %.o:%.cpp
 	$(CC) -c $< $(CFLAGS)  -o $@
+
+install:
+ifneq ($(XCAM_MODEL), XHB1)
+	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
+	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
+	echo "xStreamer debug symbol created for $(RELEASE_TARGET)"
+endif
+
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET_UTIL_LIB)
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)
 clean:
-	${RM} ${TARGET_UTIL_LIB} ${OBJS_MISCUTILS}
+	${RM} ${RELEASE_TARGET} $(DEBUG_TARGET) ${OBJS_MISCUTILS}
 
 .PHONY: all clean
 

@@ -23,12 +23,13 @@ include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 INCPATH += ../include
 
 CFLAGS += -I${INCPATH}
-CFLAGS += -fPIC -Wall
+CFLAGS += -g -fPIC -Wall
 LDFLAGS := -lpthread
 LDFLAGS += -L$(PROJ_ROOT)/share/libsccomm/bin -lsccomm
 LDFLAGS += -L${PROJ_ROOT}/vendor/img/fs/shadow_root/usr/lib -lmxml
 
-TARGET_UTIL_LIB = libsysutils.so
+RELEASE_TARGET = libsysutils.so
+DEBUG_TARGET = libsysutils_debug.so
 
 SYSUTIL_SRCS  = sysUtils.c
 SYSUTIL_CPP_SRCS = dmcliUtils.cpp
@@ -37,18 +38,31 @@ OBJS_SYSUTIL = $(SYSUTIL_SRCS:.c=.o)
 OBJS_CPP_SYSUTIL = $(SYSUTIL_CPP_SRCS:.cpp=.o)
 
 RM = rm -f
-all: $(TARGET_UTIL_LIB)
+all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 
-$(TARGET_UTIL_LIB): $(OBJS_SYSUTIL) $(OBJS_CPP_SYSUTIL)
+$(RELEASE_TARGET): $(OBJS_SYSUTIL) $(OBJS_CPP_SYSUTIL)
 	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
+	$(STRIP) $(RELEASE_TARGET)
+
+$(DEBUG_TARGET): $(OBJS_SYSUTIL) $(OBJS_CPP_SYSUTIL)
+	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
+
 %.o:%.c
 	$(CC) -c $< $(CFLAGS)  -o $@
 %.o:%.cpp
 	$(CXX) -c $< $(CFLAGS)  -o $@
+
+install:
+ifneq ($(XCAM_MODEL), XHB1)
+	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
+	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
+	echo "Debug symbol created for $(RELEASE_TARGET)"
+endif
+
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET_UTIL_LIB)
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)
 clean:
-	${RM} ${TARGET_UTIL_LIB} ${OBJS_SYSUTIL} ${OBJS_CPP_SYSUTIL}
+	${RM} ${RELEASE_TARGET} $(DEBUG_TARGET) ${OBJS_SYSUTIL} ${OBJS_CPP_SYSUTIL}
 
 .PHONY: all clean
 

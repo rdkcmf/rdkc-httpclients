@@ -10,6 +10,9 @@
 #include "watchDogTimer.h"
 
 #include "rdk_debug.h"
+#ifdef BREAKPAD
+#include "breakpadwrap.h"
+#endif
 
 watchDogTimer watchDog;
 
@@ -25,6 +28,13 @@ int main(int argc, char *argv[])
     rdk_logger_init("/etc/debug.ini");
 	int opt = 0, timeout = 0;
 	signal(SIGINT, terminate);
+
+#ifdef BREAKPAD
+	sleep(1);
+	BreakPadWrapExceptionHandler eh;
+	eh = newBreakPadWrapExceptionHandler();
+#endif
+
 	if(argc <= 1)
 	{
 		RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.WATCHDOG","arguments missing\n");
