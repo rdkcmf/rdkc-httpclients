@@ -516,6 +516,7 @@ int HttpClient::ProgressCallback_thumbnail(void *clientp, double dltotal, double
         curtime=ts.tv_sec;
         HttpClient *hClient = (HttpClient *)clientp;
         //icurrent_time = sc_linear_time(NULL);
+        max_upload_time = 20;
         if ( curtime - hClient->m_startTime > max_upload_time)
         {
           RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","Exceed the max upload time. currentTime=%d,startTime=%d\n",curtime ,hClient->m_startTime);
