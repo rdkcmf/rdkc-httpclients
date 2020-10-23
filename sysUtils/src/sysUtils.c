@@ -668,7 +668,6 @@ int getSetFileContent(char* filename, char* action, char* value)
      {
          if(NULL != value)
          {
-           printf("Value to set (%s)\n", value);
            fp = fopen(filename ,"wb");
            if(fp)
            {
