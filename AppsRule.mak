@@ -52,9 +52,13 @@ endif
 
 ifeq ($(USE_RTMESSAGE), yes)
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage
-	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/dataProvider/
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -ldataProvider
-        LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
+	ifeq ($(USE_DATAPROVIDER), no)
+		LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage
+	else
+		CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/dataProvider/
+		LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -ldataProvider
+	endif
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
 endif
 
 ifeq ($(USE_PLUGINS), yes)
