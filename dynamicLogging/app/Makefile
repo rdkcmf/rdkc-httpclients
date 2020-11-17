@@ -19,6 +19,7 @@
 
 # Add dependent libraries
 USE_RTMESSAGE = yes
+USE_DATAPROVIDER = no
 SUPPORT_MXML = yes
 
 include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
