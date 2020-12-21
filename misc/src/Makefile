@@ -46,11 +46,9 @@ $(DEBUG_TARGET): $(OBJS_MISCUTILS)
 	$(CC) -c $< $(CFLAGS)  -o $@
 
 install:
-ifneq ($(XCAM_MODEL), XHB1)
 	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
 	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
 	echo "xStreamer debug symbol created for $(RELEASE_TARGET)"
-endif
 
 uninstall:
 	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)

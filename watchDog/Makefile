@@ -34,11 +34,9 @@ RELEASE_TARGET     =   watchDogTimer
 DEBUG_TARGET     =   watchDogTimer_debug
 
 install: $(RELEASE_TARGET)
-ifneq ($(XCAM_MODEL), XHB1)
 	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
 	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
 	echo "Debug symbol created for $(RELEASE_TARGET)"
-endif
 
 all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 RM = rm

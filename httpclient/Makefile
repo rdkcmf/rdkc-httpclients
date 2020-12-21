@@ -41,11 +41,9 @@ DEBUG_TARGET +=   libhttpclient_debug.so
 TARGET     =   http_client_test
 
 install: $(RELEASE_TARGET)
-ifneq ($(XCAM_MODEL), XHB1)
 	$(PLATFORM_BREAKPAD_BINARY) $(DEBUG_TARGET) > $(RELEASE_TARGET).sym
 	mv -f $(RELEASE_TARGET).sym  $(PLATFORM_SYMBOL_PATH)
 	echo "Debug symbol created for $(RELEASE_TARGET)"
-endif
 
 all: $(RELEASE_TARGET) $(TARGET) $(DEBUG_TARGET) install
 RM = rm
