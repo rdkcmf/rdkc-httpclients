@@ -671,7 +671,6 @@ int getSetFileContent(char* filename, char* action, char* value)
            fp = fopen(filename ,"wb");
            if(fp)
            {
-             printf("Saving value to location : %s\n", filename);
              fwrite(value, sizeof(char), strlen(value), fp);
              if (NULL != fp)
              {
