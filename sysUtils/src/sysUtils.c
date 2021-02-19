@@ -356,11 +356,11 @@ int getDeviceMacValue(char *device_mac)
 		return RDKC_FAILURE;
 	}
 
-	printf("Available Interfaces are \n");
+	/*printf("Available Interfaces are \n");
 	for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
 
 		printf("%s \n", ifa->ifa_name);
-	}
+	}*/
 
         fd = socket(AF_INET, SOCK_DGRAM, 0);
         if(fd >=0)
@@ -375,17 +375,17 @@ int getDeviceMacValue(char *device_mac)
 			}
 
 			if(0 == strcmp(ifa->ifa_name, "lo")) {
-				printf("Skipping Loopback interface\n");
+				//printf("Skipping Loopback interface\n");
 				continue;
 			}
 
 			if(0 == strcmp(ifa->ifa_name, "sit0")) {
-				printf("Skipping tunnel interface\n");
+				//printf("Skipping tunnel interface\n");
                                 continue;
                         }
 
 			if(0 == strcmp(ifa->ifa_name, "macvlan0")) {
-				printf("Skipping macvlan0 interface\n");
+				//printf("Skipping macvlan0 interface\n");
                                 continue;
                         }
 
