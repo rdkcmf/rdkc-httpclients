@@ -209,3 +209,41 @@ ifeq ($(USE_KINESIS_PRODUCER), yes)
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lKinesisVideoProducer -lcproducer -llog4cplus
 	# LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lproducer -llog4cplus
 endif
+
+ifeq ($(USE_KINESIS_PRODUCER_311), yes)
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/src/common
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/src/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/client/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/client/include/com/amazonaws/kinesis/video/client
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/client/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/client/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/state/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/state/include/com/amazonaws/kinesis/video/state
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/state/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/state/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/common/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/common/include/com/amazonaws/kinesis/video/client
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/heap/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/heap/include/com/amazonaws/kinesis/video/client
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/heap/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/heap/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/trace/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/mkvgen/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/mkvgen/include/com/amazonaws/kinesis/video/client
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/mkvgen/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/mkvgen/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/view/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/view/include/com/amazonaws/kinesis/video/client
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/view/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/view/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/dependency/libkvspic/kvspic-src/src/utils/include
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/src
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/src/Common
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/src/credential-providers
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/dependency/libkvscproducer/kvscproducer-src/tst
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-gstreamer-plugin
+	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/kinesis-video-gstreamer-plugin/plugin-src/
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz -lKinesisVideoProducer -lcproducer -llog4cplus
+endif
