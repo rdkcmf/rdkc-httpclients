@@ -41,9 +41,9 @@ endif
 ifeq ($(USE_SSHUTIL), yes)
     CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/rdklogger/include
     CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/opensource/include
-    CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/libexchanger/rtmessage
+    CFLAGS     += -I${RDK_PROJECT_ROOT_PATH}/opensource/src/rtmessage
     CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/libexchanger/src
-    LIBFLAGS = -L$(RDK_PROJECT_ROOT_PATH)/libexchanger/rtmessage/ -lrtMessage -Wl,-rpath-link=${RDK_PROJECT_ROOT_PATH}/libexchanger/Release/src
+    LIBFLAGS = -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/password/src
     LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -lspake2plus
     LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lssl -lcrypto
     LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
@@ -66,10 +66,10 @@ endif
 ifeq ($(USE_RTMESSAGE), yes)
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage
 	ifeq ($(USE_DATAPROVIDER), no)
-		LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage
+       LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src
 	else
 		CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/dataProvider/
-		LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -ldataProvider
+        LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -ldataProvider
 	endif
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
 endif

@@ -110,6 +110,7 @@ function build()
     echo "Utility build is done"
     echo "Starting make install... $RDK_COMPONENT_NAME"
     install
+    cd $RDK_SOURCE_PATH
 }
 
 # This Function peforms the rebuild to generate the webrtc.node
@@ -143,6 +144,10 @@ function install()
 
     if [ -f "./xwdynamicLogging/app/xwenableLogging" ]; then
         cp -rvf "./xwdynamicLogging/app/xwenableLogging" $RDK_SDROOT/usr/local/bin
+    fi
+
+    if [ -f "./sshUtility/sshUtility" ]; then
+         cp -rvf "./sshUtility/sshUtility" $FSROOT/usr/bin
     fi
 
     if [ -f "./sysUtils/src/libsysutils.so" ]; then

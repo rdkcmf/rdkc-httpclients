@@ -17,29 +17,33 @@
 # limitations under the License.
 ##########################################################################
 
-# Add dependent libraries
-USE_RTMESSAGE = yes
-SUPPORT_MXML = yes
+CURRENTPATH = $(PWD)
+USE_SSHUTIL = yes
 
 include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
-SRC = rdkDynamicLoggingApp.cpp
-OBJ = $(SRC:.cpp=.o)
+CFLAGS  += -I./
+CFLAGS  += -fPIC -Wall
 
-LIBS += $(LIBFLAGS)
-TARGET = xwenableLogging
+SRC     += sshUtility.c
 
+OBJ      = $(SRC:.c=.o)
+
+TARGET     =   sshUtility
+
+install: $(TARGET)
 all: $(TARGET)
+RM = rm
+
+%.o:%.c
+	$(CC) -c $< $(CFLAGS)  $(LIBFLAGS) -o $@ $(LIBS)
 
 $(TARGET): $(OBJ)
-	$(CXX) $(CFLAGS) $(LIBS) $^ -o $(@)
-
-$(OBJ): $(SRC)
-	$(CXX) -c $^  $(CFLAGS) -o $(@)
+	$(CC) $(CFLAGS) -o $(@) $^ $(LIBFLAGS)
+	$(STRIP) $@
 
 uninstall:
-	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(TARGET)
-    
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/bin/$(TARGET)
+
 clean:
 	$(RM) -rf $(OBJ) *~ $(TARGET)
-

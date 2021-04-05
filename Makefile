@@ -23,6 +23,7 @@ SUBDIRS += dynamicLogging
 SUBDIRS += sysUtils
 ifeq ($(XCAM_MODEL), SCHC2)
 SUBDIRS += xwdynamicLogging
+SUBDIRS += sshUtility
 endif
 ifneq ($(XCAM_MODEL), XHB1)
 SUBDIRS += streamUtils
