@@ -73,7 +73,7 @@ void FileUtils::writeContentToFile(const string &filename, const char *fileConte
 {
     fstream ofs;
     ofs.open(filename.c_str(), ios::out | ios::trunc);
-    ofs << fileContent;
+    ofs << fileContent << std::endl;
     ofs.close();
 }
 
