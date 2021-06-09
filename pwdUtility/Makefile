@@ -17,33 +17,36 @@
 # limitations under the License.
 ##########################################################################
 
-SUBDIRS += httpclient
-SUBDIRS += RFCConfig
-SUBDIRS += dynamicLogging 
-SUBDIRS += sysUtils
-ifeq ($(XCAM_MODEL), SCHC2)
-SUBDIRS += xwdynamicLogging
-SUBDIRS += sshUtility
-endif
-ifeq ($(XCAM_MODEL), XHB1)
-SUBDIRS += pwdUtility
-endif
-ifneq ($(XCAM_MODEL), XHB1)
-ifneq ($(XCAM_MODEL), XHC3)
-SUBDIRS += streamUtils
-endif
-endif
-#SUBDIRS += configUtils
-SUBDIRS += misc
-SUBDIRS += watchDog
+CURRENTPATH = $(PWD)
 
-all:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@ || exit 1; \
-	done
+USE_SYSUTILS=yes
 
-install clean uninstall mrproper:
-	@for i in `echo $(SUBDIRS)`; do \
-		$(MAKE) -C $$i $@; \
-	done
+include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
+LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lssl -lcrypto
+CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/opensource/include
+CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/rdklogger/include
 
+CFLAGS  += -I./
+CFLAGS  += -fPIC -Wall
+
+SRC     += crypt.c md5.c
+OBJ      = $(SRC:.c=.o)
+
+TARGET   =   securepwd
+
+install: $(TARGET)
+all: $(TARGET)
+RM = rm
+
+%.o:%.c
+	$(CC) -c $< $(CFLAGS)  $(LIBFLAGS) -o $@ $(LIBS)
+
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $(@) $^ $(LIBFLAGS)
+	$(STRIP) $@
+
+uninstall:
+	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/bin/$(TARGET)
+
+clean:
+	$(RM) -rf $(OBJ) *~ $(TARGET)

@@ -167,6 +167,10 @@ function install()
     if [ -f "./watchDog/watchDogTimer" ]; then
         cp -rvf "./watchDog/watchDogTimer" $FSROOT/usr/bin
     fi
+ 
+    if [ -f "./pwdUtility/securepwd" ]; then
+         cp -rvf "./pwdUtility/securepwd" $FSROOT/usr/bin
+    fi
     echo "utility Installation is done"
 }
 
