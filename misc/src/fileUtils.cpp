@@ -56,6 +56,9 @@ int FileUtils::readFileContent(const string &filename, char *fileContent)
     {
         in.seekg(0, std::ios::end);
         size_t len = in.tellg();
+        if( 0 == len ) {
+            return -1;
+        }
         in.seekg(0);
         std::string contents(len + 1, '\0');
         in.read(&contents[0], len);
@@ -77,8 +80,9 @@ void FileUtils::writeContentToFile(const string &filename, const char *fileConte
 int FileUtils::replaceValue(const string &filename, const char *name, const char *value)
 {
     char fileContent[FILE_SIZE] = {'\0'};
-    if (0 != readFileContent(filename, fileContent))
+    if (0 != readFileContent(filename, fileContent)) {
         return -1;
+    }
 
     string subject(fileContent);
     char nameRegEx[SIZE] = {'\0'}, replaceNameValue[SIZE] = {'\0'};
@@ -91,6 +95,7 @@ int FileUtils::replaceValue(const string &filename, const char *name, const char
     string result;
     regex_replace(back_inserter(result), subject.begin(), subject.end(), re, replaceNameValue);
     writeContentToFile(filename, result.c_str());
+    return 0;
 }
 
 bool FileUtils::exists(const string &filename)
@@ -132,9 +137,10 @@ bool FileUtils::getConfiguration(const string &filename, const char *name, char 
     return bFound;
 }
 
-void FileUtils::setConfiguration(const string &filename, const char *name, const char *value)
+int FileUtils::setConfiguration(const string &filename, const char *name, const char *value)
 {
     char prevValue[SIZE] = {'\0'};
+    int ret = -1;
     if (!exists(filename))
     {
         createConfig(filename);
@@ -145,31 +151,21 @@ void FileUtils::setConfiguration(const string &filename, const char *name, const
         {
             if (strcmp(prevValue, value) != 0)
             {
-                replaceValue(filename, name, value);
+                ret = replaceValue(filename, name, value);
+                if (0 != ret ) {
+                    return -1;
+                }
             }
-            return;
+            return 0;
         }
-    }
-
-    if (strcmp(prevValue, "") == 0)
-    {
-        replaceValue(filename, name, value);
-        return;
-    }
-    else
-    {
-        char buffer[MAX_BUFFER_SIZE] = {'\0'};
-        sprintf(buffer, "%s=%s\n", name, value);
-
-        filePutContents(filename, buffer, true);
-        return;
     }
     char buffer[MAX_BUFFER_SIZE] = {'\0'};
     sprintf(buffer, "%s=%s\n", name, value);
 
     filePutContents(filename, buffer, true);
-    return;
+    return 0;
 }
+
 bool FileUtils::loadFromFile(const std::string &filename)
 {
     m_data.clear();
@@ -246,4 +242,19 @@ void FileUtils::print() const
     
     std::cout << std::endl << "Size: " << m_data.size() << std::endl;
 #endif
+}
+
+int FileUtils::filesize(const string &filename)
+{
+    int size = 0;
+    FILE* fp = NULL;
+    fp = fopen(filename.c_str(),"rb");
+    if( NULL != fp ) {
+        fseek(fp, 0L, SEEK_END);
+        size = ftell(fp);
+        fclose(fp);
+        return size;
+    } else {
+        return 0;
+    }
 }

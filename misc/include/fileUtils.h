@@ -75,13 +75,14 @@ class FileUtils
 	~FileUtils();
 	bool exists(const string &filename);
 	bool getConfiguration(const string &filename, const char *name, char *value);
-	void setConfiguration(const string &filename, const char *name, const char *value);
+	int setConfiguration(const string &filename, const char *name, const char *value);
 	void writeContentToFile(const string &filename, const char *fileContent);
 
 	bool loadFromFile(const std::string &filename);
 	template <typename T>
 	void get(const std::string &key, T &value) const;
 	void print() const;
+        int  filesize(const string &filename);
 };
 
 template <typename T>
