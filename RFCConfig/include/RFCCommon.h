@@ -71,6 +71,9 @@
 /* ----------------------------  SMART THUMBNAIL  ------------------------ */
 #define SMART_TN_UPLOAD		"SMART_TN_UPLOAD"
 
+/* ----------------------------  DELIVERY DETECTION  --------------------- */
+#define DELIVERY_DETECTION_RFC  "RDKC_DELIVERY_DETECTION"
+
 /* ----------------------------  JSON Provisioning  ------------------------ */
 #define RFC_JSON_FLAG                	   "RFC_ENABLE_RDKC_PROVISIONING_JSON"
 
