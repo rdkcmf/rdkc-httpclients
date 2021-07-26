@@ -389,6 +389,11 @@ int getDeviceMacValue(char *device_mac)
                                 continue;
                         }
 
+			if(0 == strcmp(ifa->ifa_name, "usb0")) {
+				//printf("Skipping usb0 interface\n");
+                                continue;
+                        }
+
 	                strncpy(ifr.ifr_name , ifa->ifa_name , IFNAMSIZ-1);
 
 			/* get the hw address */
