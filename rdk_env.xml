@@ -19,7 +19,7 @@
 <environment>
   <components>
     <utility>
-      <dependencies>sdk,log4c,rdklogger,curl,zlib-1.2.8,rtmessage,libexchanger</dependencies>
+      <dependencies>sdk,log4c,rdklogger,curl,zlib-1.2.11,rtmessage,libexchanger</dependencies>
     </utility>
   </components>
 </environment>
