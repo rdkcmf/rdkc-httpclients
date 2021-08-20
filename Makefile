@@ -25,9 +25,6 @@ ifeq ($(XCAM_MODEL), SCHC2)
 SUBDIRS += xwdynamicLogging
 SUBDIRS += sshUtility
 endif
-ifeq ($(XCAM_MODEL), XHB1)
-SUBDIRS += pwdUtility
-endif
 ifneq ($(XCAM_MODEL), XHB1)
 ifneq ($(XCAM_MODEL), XHC3)
 SUBDIRS += streamUtils
