@@ -78,7 +78,7 @@ public:
 	void addHeader(const char * headerStr, const char * headerVal);
 	void resetHeaderList();
 	char *get(const char *url, int *curlCode);
-	char *getResponse(const char *url, int *curlCode, int connecttimeout = DEFAULT_CURL_TIMEOUT);
+	char *getResponse(const char *url, int *curlCode, int connecttimeout = DEFAULT_CURL_TIMEOUT, bool mTLS=false);
 	int dumpResponseinFile(char *url, int *curlCode, char* filename, int connecttimeout = DEFAULT_CURL_TIMEOUT);
 	int post(const char *url, const char *data, long *response_code);
 	int post_binary(const char *url, const char *data, long *response_code,long file_len);
@@ -108,8 +108,7 @@ private:
 	const char *url_http_code_str(int http_code);
 	static int ProgressCallback(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 	static int ProgressCallback_thumbnail(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
-	void curlEasyHandle_initialize(const char *url);
-	void curlEasyHandle_initialize_mutualtls(const char* url);
+	void curlEasyHandle_initialize(const char *url, bool mTLS=false);
 	void curlEasyHandle_reset();
         void getcurleasyInfoData();
 	bool is_xpki_enabled;

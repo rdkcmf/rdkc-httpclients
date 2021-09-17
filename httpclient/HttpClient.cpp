@@ -536,7 +536,7 @@ int HttpClient::dumpResponseinFile(char *url, int *curlCode, char* filename, int
  *
  * @return Call back data.
  */
-char *HttpClient::getResponse(const char *url, int *curlCode, int connecttimeout)
+char *HttpClient::getResponse(const char *url, int *curlCode, int connecttimeout,bool mTLS)
 {
 	if (NULL == url) {
                 RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid URL \n", __FILE__, __LINE__);
@@ -556,7 +556,7 @@ char *HttpClient::getResponse(const char *url, int *curlCode, int connecttimeout
                 return NULL;
         }
 	curlEasyHandle_reset();
-	curlEasyHandle_initialize(url);
+	curlEasyHandle_initialize(url,mTLS);
 	//curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
 	//No header in response
 	curl_easy_setopt(curlEasyHandle, CURLOPT_HEADER, 0L);
@@ -686,7 +686,7 @@ int HttpClient::post(const char *url, const char *data, long *response_code)
 		return -1;
 	}
 	curlEasyHandle_reset();
-	curlEasyHandle_initialize_mutualtls(url);
+	curlEasyHandle_initialize(url);
 	curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
 	curl_easy_setopt(curlEasyHandle, CURLOPT_POST, 1L);
 	curl_easy_setopt(curlEasyHandle, CURLOPT_POSTFIELDSIZE, 0L);
@@ -876,7 +876,7 @@ int HttpClient::post_binary(const char *url, const char *data, long *response_co
                 return -1;
         }
 	curlEasyHandle_reset();
-	curlEasyHandle_initialize_mutualtls(url);
+	curlEasyHandle_initialize(url);
         //curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(curlEasyHandle, CURLOPT_NOPROGRESS, 0);
 
@@ -1093,7 +1093,7 @@ void HttpClient::resetHeaderList()
 
 }
 
-void HttpClient::curlEasyHandle_initialize(const char* url) /*DELIA-19201*/
+void HttpClient::curlEasyHandle_initialize(const char* url,bool mTLS)
 {
         curl_easy_setopt(curlEasyHandle, CURLOPT_URL, url);
         curl_easy_setopt(curlEasyHandle, CURLOPT_HEADER, 1L);
@@ -1112,23 +1112,23 @@ void HttpClient::curlEasyHandle_initialize(const char* url) /*DELIA-19201*/
                 curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYHOST, 2L);
         }
         curl_easy_setopt(curlEasyHandle, CURLOPT_FOLLOWLOCATION, 1L);
-	//curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 0L);
-}
-
-void HttpClient::curlEasyHandle_initialize_mutualtls(const char* url) /*DELIA-19201*/
-{
-        curl_easy_setopt(curlEasyHandle, CURLOPT_URL, url);
-        curl_easy_setopt(curlEasyHandle, CURLOPT_HEADER, 1L);
-        curl_easy_setopt(curlEasyHandle, CURLOPT_DNS_CACHE_TIMEOUT, dnsCacheTimeout);
+	//curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(curlEasyHandle, CURLOPT_CAINFO, ca_cert_file);
-        curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERT, cert_file);
-        curl_easy_setopt(curlEasyHandle, CURLOPT_FOLLOWLOCATION, 1L);
 
-	curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEYTYPE, "PEM");
-	curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "PEM");
-
-	curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYPEER, 1L);
-	curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYHOST, 2L);
+        if(mTLS) {
+            curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERT, cert_file);
+            if ( is_xpki_enabled ) {
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "P12");
+                curl_easy_setopt(curlEasyHandle, CURLOPT_KEYPASSWD, xpki_cert_pass);
+	        RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using xpki cert since xpki is enabled \n",__FILE__, __LINE__);
+            } else if ( is_static_xpki_enabled ) {
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "P12");
+                curl_easy_setopt(curlEasyHandle, CURLOPT_KEYPASSWD, static_xpki_cert_pass);
+	        RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using static xpki cert since static xpki is enabled \n",__FILE__, __LINE__);
+           } else {
+                RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using normal cert\n",__FILE__, __LINE__);
+           }
+        }
 }
 
 void HttpClient::curlEasyHandle_reset() /*DELIA-19201*/
