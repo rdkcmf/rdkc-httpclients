@@ -43,6 +43,7 @@ HttpClient::HttpClient()
         , cert_file(NULL)
 	, m_SHAHASHHeader()
         , m_shaHashCode()
+	, is_xpki_enabled(false)
 {
 	RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): HttpClient constructor \n",__FILE__, __LINE__);
 
@@ -292,10 +293,23 @@ void HttpClient::open(const char* url, long dnsCacheTimeout1, int upload_time, c
 	max_upload_time = upload_time;
 	RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): max_upload_time: %d\n",__FILE__, __LINE__, max_upload_time);
 
+
 	curlEasyHandle = curl_easy_init();
         dnsCacheTimeout = dnsCacheTimeout1;
-        ca_cert_file = ca_cert_file1;
-        cert_file = cert_file1;
+        if ( getenv("XPKI") != NULL) {
+	    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): xpki is enabled\n",__FILE__, __LINE__);
+            is_xpki_enabled = true;
+	}
+        if (is_xpki_enabled) {
+	   RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using xpki cert\n",__FILE__, __LINE__);
+           ca_cert_file = ca_cert_file1;
+           cert_file = XPKI_CERT_FILE; 
+        }
+        else {
+	    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using normal cert\n",__FILE__, __LINE__);
+            ca_cert_file = ca_cert_file1;
+            cert_file = cert_file1;
+        }
         if(NULL != cbData) {
         	cbData->data = (char *)malloc(BUFFER_SIZE);
                 if (NULL != cbData->data) {
@@ -884,6 +898,13 @@ void HttpClient::curlEasyHandle_initialize(const char* url) /*DELIA-19201*/
         curl_easy_setopt(curlEasyHandle, CURLOPT_DNS_CACHE_TIMEOUT, dnsCacheTimeout);
         curl_easy_setopt(curlEasyHandle, CURLOPT_CAINFO, ca_cert_file);
         curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERT, cert_file);
+        if ( is_xpki_enabled ) {
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEYTYPE, "PEM");
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "PEM");
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEY, XPKI_KEY_FILE);
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYPEER, 1L);
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYHOST, 2L);
+        }
         curl_easy_setopt(curlEasyHandle, CURLOPT_FOLLOWLOCATION, 1L);
 	//curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 0L);
 }

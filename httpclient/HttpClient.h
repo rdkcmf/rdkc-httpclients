@@ -37,6 +37,9 @@
 #define CA_CERT_FILE    "/etc/ssl/certs/CAcerts.pem"
 #define CERT_FILE       "/etc/ssl/certs/client.pem"
 
+#define XPKI_KEY_FILE   "/opt/usr_config/xpki_key.pem"
+#define XPKI_CERT_FILE  "/opt/usr_config/xpki_cert.pem"
+
 enum HTTP_RESPONSE_STATUS
 {
 	RDKC_HTTP_RESPONSE_OK = 200,
@@ -102,6 +105,7 @@ private:
 	void curlEasyHandle_initialize(const char *url);
 	void curlEasyHandle_initialize_mutualtls(const char* url);
 	void curlEasyHandle_reset();
+	bool is_xpki_enabled;
 };
 
 #endif
