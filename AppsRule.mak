@@ -23,6 +23,9 @@ CFLAGS += -fstack-protector -Wno-error
 CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/rdklogger/include
 CFLAGS  += -I${RDK_PROJECT_ROOT_PATH}/opensource/include
 LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rdklogger/src/.libs/ -lrdkloggers
+ifeq ($(XCAM_MODEL), XHC3)
+    LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -llog4c
+endif
 
 LIBFLAGS += -Wl,-rpath,$(RDK_PROJECT_ROOT_PATH)/opensource/lib
 LIBFLAGS += -L${RDK_PROJECT_ROOT_PATH}/opensource/lib -lssl -lcrypto -ljansson
