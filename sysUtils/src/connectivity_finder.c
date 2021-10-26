@@ -111,7 +111,9 @@ static bool is_external_network_connected()
 //curl timeout -- Disconnected (WIFI DISCONNECTED STATE)
 MODE stateFinder()
 {
-    MODE state = captivePortal_connectivity_check();
+    /* Temporarily disabling captive portal check */
+    //MODE state = captivePortal_connectivity_check();
+    MODE state = DISCONNECTED_STATE;
     if ( state == DISCONNECTED_STATE )
     {
       if (is_external_network_connected())
@@ -129,11 +131,11 @@ MODE stateFinder()
         state = DISCONNECTED_STATE;
       }
       // Print log for captive portal failure only once in approx 5 mins
-      if (portal_failure_count >= 150)
+      /*if (portal_failure_count >= 150)
       {
         printf("Captive Portal not reachable. Back up logic is in use\n");
         portal_failure_count=0;
-      }
+      }*/
     }
     return state;
 }
