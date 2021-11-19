@@ -27,12 +27,11 @@ CFLAGS += -g -fPIC -Wall
 LDFLAGS := -lpthread
 LDFLAGS += -L$(PROJ_ROOT)/share/libsccomm/bin -lsccomm
 LDFLAGS += -L${PROJ_ROOT}/vendor/img/fs/shadow_root/usr/lib -lmxml
-LDFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl
 
 RELEASE_TARGET = libsysutils.so
 DEBUG_TARGET = libsysutils_debug.so
 
-SYSUTIL_SRCS  = sysUtils.c connectivity_finder.c
+SYSUTIL_SRCS  = sysUtils.c
 SYSUTIL_CPP_SRCS = dmcliUtils.cpp
 
 OBJS_SYSUTIL = $(SYSUTIL_SRCS:.c=.o)

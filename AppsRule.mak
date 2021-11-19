@@ -103,9 +103,7 @@ endif
 
 ifeq ($(USE_SYSUTILS), yes)
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/utility/sysUtils/include
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcurl -lz
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/utility/sysUtils/src -lsysutils
-	LDFLAGS = $(LIBFLAGS)
+	LIBFLAGS    += -L$(RDK_PROJECT_ROOT_PATH)/utility/sysUtils/src -lsysutils
 endif
 
 ifeq ($(USE_CONFIGUTILS), yes)
