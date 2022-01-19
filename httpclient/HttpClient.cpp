@@ -517,7 +517,7 @@ int HttpClient::ProgressCallback_thumbnail(void *clientp, double dltotal, double
         HttpClient *hClient = (HttpClient *)clientp;
         //icurrent_time = sc_linear_time(NULL);
         max_upload_time = 20;
-        if ( curtime - hClient->m_startTime > max_upload_time)
+        if ( curtime - hClient->m_startTime >= max_upload_time)
         {
           RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","Exceed the max upload time. currentTime=%d,startTime=%d\n",curtime ,hClient->m_startTime);
           return 1; //Returning a non-zero value from this callback will cause libcurl to abort the transfer and return
