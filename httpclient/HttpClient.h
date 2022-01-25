@@ -40,6 +40,9 @@
 #define XPKI_KEY_FILE   "/opt/usr_config/xpki_key.pem"
 #define XPKI_CERT_FILE  "/opt/usr_config/xpki_cert.pem"
 
+#define STATIC_XPKI_KEY_FILE   "/opt/usr_config/static_xpki_key.pem"
+#define STATIC_XPKI_CERT_FILE  "/opt/usr_config/static_xpki_cert.pem"
+
 enum HTTP_RESPONSE_STATUS
 {
 	RDKC_HTTP_RESPONSE_OK = 200,
@@ -106,6 +109,7 @@ private:
 	void curlEasyHandle_initialize_mutualtls(const char* url);
 	void curlEasyHandle_reset();
 	bool is_xpki_enabled;
+	bool is_static_xpki_enabled;
 };
 
 #endif
