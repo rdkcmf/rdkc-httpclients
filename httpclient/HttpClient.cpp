@@ -140,6 +140,25 @@ const char *HttpClient::url_http_code_str(int http_code)
 }
 
 /**
+ * @brief This is callback function used by libcurl to write data in a file
+ *
+ * @param[in] ptr    Pointer to received data.
+ * @param[in] size   Size of data.
+ * @param[in] nmemb  No. of members.
+ * @param[in] stream Buffer to which data is written.
+ *
+ * @return size of data.
+ */
+size_t HttpClient::write_data_inFile(void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+    size_t written = 0;
+    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): write_data_inFile size is %d, nmemb is %d \n",__FILE__, __LINE__,size,nmemb);
+    written = fwrite(ptr, size, nmemb, stream);
+    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): data written in file is %d \n",__FILE__, __LINE__,written);
+    return written;
+}
+
+/**
  * @brief This is callback function used by libcurl to wriite data
  *
  * @param[in] ptr    Pointer to received data.
@@ -327,6 +346,81 @@ void HttpClient::open(const char* url, long dnsCacheTimeout1, int upload_time, c
         	cbData->allocated = BUFFER_SIZE;
         	cbData->pos = 0;
 	}
+}
+
+/**
+ * @brief This function is used to dump data in a file from the server.
+ *
+ * @param[in] url URL of the GET server.
+ * @param[out] curlCode Return value for the curl command.
+ *
+ * @return None.
+ */
+int HttpClient::dumpResponseinFile(char *url, int *curlCode, char* filename, int connecttimeout)
+{
+        FILE* dumpfp = NULL;
+	if (NULL == url) {
+                RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid URL \n", __FILE__, __LINE__);
+                return 1;
+	}
+	RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): Requesting/GET URL at %s\n",__FILE__, __LINE__, url);
+
+        if (NULL == filename) {
+                RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid file name \n", __FILE__, __LINE__);
+                return 1;
+	}
+
+        dumpfp = fopen(filename,"wb");
+        if ( NULL == dumpfp ) {
+                RDK_LOG( RDK_LOG_ERROR, "LOG.RDK.HTTPCLIENT", "%s(%d) :open dump file open error\n", __FILE__, __LINE__ );
+        }
+
+        if (!curlEasyHandle)
+        {
+                RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Could not allocate HTTP structures\n", __FILE__, __LINE__);
+                return 1;
+        }
+	curlEasyHandle_reset();
+	curlEasyHandle_initialize(url);
+	//curl_easy_setopt(curlEasyHandle, CURLOPT_VERBOSE, 1L);
+	//No header in response
+	curl_easy_setopt(curlEasyHandle, CURLOPT_HEADER, 0L);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEFUNCTION, write_data_inFile);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEDATA, dumpfp);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_HEADERFUNCTION, headerCallback);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_WRITEHEADER, this);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_HTTPHEADER, curlSlist);
+	curl_easy_setopt(curlEasyHandle, CURLOPT_CONNECTTIMEOUT, connecttimeout);
+	CURLcode curl_code = curl_easy_perform(curlEasyHandle);
+
+        /* close file dump handle */
+        fclose(dumpfp);
+        dumpfp = NULL;
+
+	if (curl_code)
+	{
+		RDK_LOG(RDK_LOG_WARN,"LOG.RDK.HTTPCLIENT","%s(%d): CURL perform returned code: %d (%s) on URL: %s\n", __FILE__, __LINE__, curl_code, curl_easy_strerror(curl_code), url);
+		if(curlCode){
+			*curlCode = (int)curl_code;
+		}
+                return 1;
+	}
+	else
+	{
+		RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): CURL perform success returned code: %d (%s) on URL: %s\n", __FILE__, __LINE__, curl_code, curl_easy_strerror(curl_code), url);
+		if(curlCode)
+			*curlCode = 0;
+		long http_response;
+		curl_easy_getinfo(curlEasyHandle, CURLINFO_RESPONSE_CODE, &http_response);
+		if (http_response != 200 && http_response != 0)
+		{
+			if(curlCode)
+				*curlCode = http_response;
+			RDK_LOG(RDK_LOG_WARN,"LOG.RDK.HTTPCLIENT","%s(%d): Received HTTP response code: %ld: %s\n", __FILE__, __LINE__, http_response, url_http_code_str(http_response));
+			memset(cbData->data, 0, cbData->allocated);
+		}
+	}
+        return 0;
 }
 
 /**

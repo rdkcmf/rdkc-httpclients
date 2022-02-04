@@ -78,6 +78,7 @@ public:
 	void resetHeaderList();
 	char *get(const char *url, int *curlCode);
 	char *getResponse(const char *url, int *curlCode, int connecttimeout = DEFAULT_CURL_TIMEOUT);
+	int dumpResponseinFile(char *url, int *curlCode, char* filename, int connecttimeout = DEFAULT_CURL_TIMEOUT);
 	int post(const char *url, const char *data, long *response_code);
 	int post_binary(const char *url, const char *data, long *response_code,long file_len);
         int post_binary(const char *url, const char *data, long *response_code,long file_len,int startTime);
@@ -100,6 +101,7 @@ private:
 	static int max_upload_time;
 	curl_off_t m_uploadSpeed;
 	static size_t write_response(void *ptr, size_t size, size_t nmemb, void *stream);
+        static size_t write_data_inFile(void *ptr, size_t size, size_t nmemb, FILE *stream);
 	static size_t write_post_response(void *ptr, size_t size, size_t nmemb, void *stream);
 	static size_t headerCallback(void *buffer, size_t size, size_t numData, void *stream);
 	const char *url_http_code_str(int http_code);
