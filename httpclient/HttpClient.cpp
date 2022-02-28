@@ -41,6 +41,8 @@ HttpClient::HttpClient()
         , m_uploadSpeed(0)
         , ca_cert_file(NULL)
         , cert_file(NULL)
+        , xpki_cert_pass(NULL)
+        , static_xpki_cert_pass(NULL)
 	, m_SHAHASHHeader()
         , m_shaHashCode()
 	, is_xpki_enabled(false)
@@ -313,27 +315,50 @@ void HttpClient::open(const char* url, long dnsCacheTimeout1, int upload_time, c
 	max_upload_time = upload_time;
 	RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): max_upload_time: %d\n",__FILE__, __LINE__, max_upload_time);
 
-
 	curlEasyHandle = curl_easy_init();
         dnsCacheTimeout = dnsCacheTimeout1;
-        if ( getenv("XPKI") != NULL) {
-	    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): xpki is enabled\n",__FILE__, __LINE__);
-            is_xpki_enabled = true;
-	} else if ( getenv("STATICXPKI") != NULL) {
-	    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): static xpki is enabled\n",__FILE__, __LINE__);
-            is_static_xpki_enabled = true;
+        if ( NULL != getenv("XPKI") ) {
+            ca_cert_file = ca_cert_file1;
+            cert_file = getenv("XPKI_CERT");
+            if( NULL != cert_file ) {
+	        RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): xpki cert file is %s\n",__FILE__, __LINE__,cert_file);
+            } else {
+	        RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid xpki cert file \n",__FILE__, __LINE__);
+            }
+            xpki_cert_pass = getenv("XPKI_PASS");
+            if ( NULL != xpki_cert_pass ) {
+	        RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): xpki cert pass is %s\n",__FILE__, __LINE__,xpki_cert_pass);
+            } else {
+	        RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid xpki cert password \n",__FILE__, __LINE__);
+            }
+
+            if  ( ( 0 != strlen(cert_file) )  && ( 0 != strlen(xpki_cert_pass ) ) ) {
+                is_xpki_enabled = true;
+	        RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using xpki cert since xpki is enabled \n",__FILE__, __LINE__);
+            }
+	} else if ( NULL != getenv("STATICXPKI") ) {
+            ca_cert_file = ca_cert_file1;
+            cert_file = getenv("STATIC_XPKI_CERT");
+            if( NULL != cert_file ) {
+	        RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): static xpki cert file is %s\n",__FILE__, __LINE__,cert_file);
+            } else {
+	        RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid static xpki cert file \n",__FILE__, __LINE__);
+            }
+            static_xpki_cert_pass = getenv("STATIC_XPKI_PASS");
+            if( NULL != static_xpki_cert_pass ) {
+	        RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d): static xpki cert pass is %s\n",__FILE__, __LINE__,static_xpki_cert_pass);
+            } else {
+	        RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid static xpki cert password \n",__FILE__, __LINE__);
+            }
+
+            if  ( ( 0 != strlen(cert_file) )  && ( 0 != strlen(static_xpki_cert_pass ) ) ) {
+                is_static_xpki_enabled = true;
+	        RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using static xpki cert since static xpki is enabled \n",__FILE__, __LINE__);
+            }
         }
 
-        if (is_xpki_enabled) {
-	   RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using xpki cert\n",__FILE__, __LINE__);
-           ca_cert_file = ca_cert_file1;
-           cert_file = XPKI_CERT_FILE; 
-        } else if (is_static_xpki_enabled) {
-	   RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using static xpki cert\n",__FILE__, __LINE__);
-           ca_cert_file = ca_cert_file1;
-           cert_file = STATIC_XPKI_CERT_FILE;
-        } else {
-	    RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using normal cert\n",__FILE__, __LINE__);
+        if ( ( false == is_xpki_enabled ) && ( false == is_static_xpki_enabled ) ) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d): using normal cert\n",__FILE__, __LINE__);
             ca_cert_file = ca_cert_file1;
             cert_file = cert_file1;
         }
@@ -1002,15 +1027,13 @@ void HttpClient::curlEasyHandle_initialize(const char* url) /*DELIA-19201*/
         curl_easy_setopt(curlEasyHandle, CURLOPT_CAINFO, ca_cert_file);
         curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERT, cert_file);
         if ( is_xpki_enabled ) {
-                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEYTYPE, "PEM");
-                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "PEM");
-                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEY, XPKI_KEY_FILE);
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "P12");
+                curl_easy_setopt(curlEasyHandle, CURLOPT_KEYPASSWD, xpki_cert_pass);
                 curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYPEER, 1L);
                 curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYHOST, 2L);
         } else if ( is_static_xpki_enabled ) {
-                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEYTYPE, "PEM");
-                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "PEM");
-                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLKEY, STATIC_XPKI_KEY_FILE);
+                curl_easy_setopt(curlEasyHandle, CURLOPT_SSLCERTTYPE, "P12");
+                curl_easy_setopt(curlEasyHandle, CURLOPT_KEYPASSWD, static_xpki_cert_pass);
                 curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYPEER, 1L);
                 curl_easy_setopt(curlEasyHandle, CURLOPT_SSL_VERIFYHOST, 2L);
         }

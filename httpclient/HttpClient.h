@@ -112,6 +112,8 @@ private:
 	void curlEasyHandle_reset();
 	bool is_xpki_enabled;
 	bool is_static_xpki_enabled;
+        const char* xpki_cert_pass;
+        const char* static_xpki_cert_pass;
 };
 
 #endif
