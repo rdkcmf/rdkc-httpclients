@@ -33,6 +33,7 @@
 #define MAX_UPLOAD_TIME 8
 #define DEFAULT_DNS_CACHE_TIMEOUT   60
 #define DEFAULT_CURL_TIMEOUT 10
+#define DEFAULT_CURL_MAXUPLOADTIMEOUT 30
 
 #define CA_CERT_FILE    "/etc/ssl/certs/CAcerts.pem"
 #define CERT_FILE       "/etc/ssl/certs/client.pem"
@@ -110,6 +111,7 @@ private:
 	void curlEasyHandle_initialize(const char *url);
 	void curlEasyHandle_initialize_mutualtls(const char* url);
 	void curlEasyHandle_reset();
+        void getcurleasyInfoData();
 	bool is_xpki_enabled;
 	bool is_static_xpki_enabled;
         const char* xpki_cert_pass;

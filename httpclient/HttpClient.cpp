@@ -142,6 +142,86 @@ const char *HttpClient::url_http_code_str(int http_code)
 }
 
 /**
+ * @brief This function is used to get curl operation information
+ * https://curl.se/libcurl/c/curl_easy_getinfo.html
+ *
+ * @param[in] None.
+ *
+ * @return None.
+ */
+void HttpClient::getcurleasyInfoData()
+{
+    double curloperationvalue=0.0;
+    CURLcode curlret;
+
+    if (curlEasyHandle != NULL) {
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_TOTAL_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_TOTAL_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_TOTAL_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_NAMELOOKUP_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_NAMELOOKUP_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_NAMELOOKUP_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_CONNECT_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_CONNECT_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_CONNECT_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_APPCONNECT_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_APPCONNECT_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_APPCONNECT_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_PRETRANSFER_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_PRETRANSFER_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_PRETRANSFER_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_STARTTRANSFER_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_STARTTRANSFER_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump STARTTRANSFER_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_REDIRECT_TIME, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_REDIRECT_TIME: %f seconds\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_REDIRECT_TIME\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_SPEED_UPLOAD, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_CURLINFO_SPEED_UPLOAD: %f bytes/sec\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_CURLINFO_SPEED_UPLOAD\n",__FILE__, __LINE__);
+        }
+
+        curlret = curl_easy_getinfo(curlEasyHandle, CURLINFO_SIZE_UPLOAD, &curloperationvalue);
+        if (curlret == CURLE_OK) {
+            RDK_LOG(RDK_LOG_INFO,"LOG.RDK.HTTPCLIENT","%s(%d)CURL_CURLINFO_SIZE_UPLOAD: %f bytes\n",__FILE__, __LINE__,curloperationvalue);
+        } else {
+            RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","%s(%d)Failed to dump CURL_CURLINFO_SIZE_UPLOAD\n",__FILE__, __LINE__);
+        }
+    }
+}
+
+
+/**
  * @brief This is callback function used by libcurl to write data in a file
  *
  * @param[in] ptr    Pointer to received data.
@@ -646,19 +726,13 @@ int HttpClient::post(const char *url, const char *data, long *response_code)
 }
 
 int HttpClient::ProgressCallback_thumbnail(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
-
 {
         time_t curtime = 0;
-        //struct timeval tv;
 	struct timespec ts;
-
-        //gettimeofday(&tv, NULL);
 	clock_gettime(CLOCK_REALTIME, &ts);
-        //curtime=tv.tv_sec;
         curtime=ts.tv_sec;
         HttpClient *hClient = (HttpClient *)clientp;
-        //icurrent_time = sc_linear_time(NULL);
-        max_upload_time = 20;
+        max_upload_time = DEFAULT_CURL_MAXUPLOADTIMEOUT;
         if ( curtime - hClient->m_startTime >= max_upload_time)
         {
           RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","Exceed the max upload time. currentTime=%d,startTime=%d\n",curtime ,hClient->m_startTime);
@@ -669,27 +743,21 @@ int HttpClient::ProgressCallback_thumbnail(void *clientp, double dltotal, double
 }
 
 int HttpClient::ProgressCallback(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
-
 {
 	time_t curtime = 0;
-	//struct timeval tv;
 	struct timespec ts;
 
-	//gettimeofday(&tv, NULL);
 	clock_gettime(CLOCK_REALTIME, &ts);
-	//curtime=tv.tv_sec;
 	curtime=ts.tv_sec;
 	HttpClient *hClient = (HttpClient *)clientp;
         RDK_LOG(RDK_LOG_DEBUG,"LOG.RDK.HTTPCLIENT","Inside HttpClient::ProgressCallback time diff =%d  and m_remainingTime %d\n",curtime - hClient->m_startTime,hClient->m_remainingTime);
 
-	//icurrent_time = sc_linear_time(NULL);
 	if ( curtime - hClient->m_startTime >= hClient->m_remainingTime)
         {
           RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","Exceed the max upload time. currentTime=%d,startTime=%d\n",curtime ,hClient->m_startTime);
 	  return 1; //Returning a non-zero value from this callback will cause libcurl to abort the transfer and return
         }
   	return 0;
-
 }
 
 /**
@@ -787,6 +855,7 @@ int HttpClient::post_binary(const char *url, const char *data, long *response_co
         //struct timeval tv;
 	struct timespec ts;
 	char arr[256];
+        static int curlInfoCounter=0;
 
         if (NULL == url) {
                 RDK_LOG(RDK_LOG_ERROR,"LOG.RDK.HTTPCLIENT","%s(%d): Invalid URL \n", __FILE__, __LINE__);
@@ -840,6 +909,11 @@ int HttpClient::post_binary(const char *url, const char *data, long *response_co
         if (curl_code)
         {
                 RDK_LOG(RDK_LOG_WARN,"LOG.RDK.HTTPCLIENT","%s(%d): CURL perform returned error code: %d (%s) \n", __FILE__, __LINE__, curl_code, curl_easy_strerror(curl_code));
+                if( 0 == (curlInfoCounter % 5) ) {
+                    getcurleasyInfoData();
+                    curlInfoCounter=0;
+                }
+                curlInfoCounter++;
         }
         else
         {
