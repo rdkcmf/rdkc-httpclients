@@ -37,12 +37,7 @@
 
 #define CA_CERT_FILE    "/etc/ssl/certs/CAcerts.pem"
 #define CERT_FILE       "/etc/ssl/certs/client.pem"
-
-#define XPKI_KEY_FILE   "/opt/usr_config/xpki_key.pem"
-#define XPKI_CERT_FILE  "/opt/usr_config/xpki_cert.pem"
-
-#define STATIC_XPKI_KEY_FILE   "/opt/usr_config/static_xpki_key.pem"
-#define STATIC_XPKI_CERT_FILE  "/opt/usr_config/static_xpki_cert.pem"
+#define CURLSSL_GENERICERROR 500
 
 enum HTTP_RESPONSE_STATUS
 {

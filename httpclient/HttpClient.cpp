@@ -568,7 +568,18 @@ char *HttpClient::getResponse(const char *url, int *curlCode, int connecttimeout
 	if (curl_code)
 	{
 		RDK_LOG(RDK_LOG_WARN,"LOG.RDK.HTTPCLIENT","%s(%d): CURL perform returned code: %d (%s) on URL: %s\n", __FILE__, __LINE__, curl_code, curl_easy_strerror(curl_code), url);
-		if(curlCode){
+                // SSL Errors 35|51|53|54|58|59|60|64|66|77|80|82|83|90|91|27
+                if ( ( CURLE_SSL_CONNECT_ERROR == curl_code ) || ( CURLE_SSL_ENGINE_NOTFOUND == curl_code ) ||
+                     ( CURLE_SSL_ENGINE_SETFAILED == curl_code ) || ( CURLE_SSL_ENGINE_SETFAILED == curl_code ) ||
+                     ( CURLE_SSL_CERTPROBLEM == curl_code ) || ( CURLE_SSL_CIPHER == curl_code ) ||
+                     ( CURLE_PEER_FAILED_VERIFICATION == curl_code ) || ( CURLE_USE_SSL_FAILED == curl_code ) ||
+                     ( CURLE_SSL_ENGINE_INITFAILED == curl_code ) || ( CURLE_SSL_CACERT_BADFILE == curl_code ) ||
+                     ( CURLE_SSL_SHUTDOWN_FAILED == curl_code ) || ( CURLE_SSL_CRL_BADFILE == curl_code ) ||
+                     ( CURLE_SSL_ISSUER_ERROR == curl_code ) || ( CURLE_SSL_PINNEDPUBKEYNOTMATCH == curl_code ) ||
+                     ( CURLE_SSL_INVALIDCERTSTATUS == curl_code ) || (CURLE_OUT_OF_MEMORY == curl_code)
+                   ) {
+			*curlCode = (int)CURLSSL_GENERICERROR;
+                } else {
 			*curlCode = (int)curl_code;
 		}
 		return NULL;
