@@ -13,6 +13,7 @@
 #ifdef BREAKPAD
 #include "breakpadwrap.h"
 #endif
+#include "telemetry_busmessage_sender.h"
 
 watchDogTimer watchDog;
 
@@ -34,6 +35,8 @@ int main(int argc, char *argv[])
 	BreakPadWrapExceptionHandler eh;
 	eh = newBreakPadWrapExceptionHandler();
 #endif
+
+        t2_init("watchDogTimer");
 
 	if(argc <= 1)
 	{

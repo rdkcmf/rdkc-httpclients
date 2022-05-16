@@ -180,6 +180,12 @@ ifeq ($(USE_LIBSYSWRAPPER), yes)
         LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/libsyswrapper/source/.libs/  -lsecure_wrapper 
 endif
 
+ifeq ($(USE_TELEMETRY_2), yes)
+	USE_RTMESSAGE = yes
+	CFLAGS += -I$(RDK_PROJECT_ROOT_PATH)/telemetry/include/
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/ -ltelemetry_msgsender -lt2utils -lmsgpackc -Wl,-rpath-link=${RDK_PROJECT_ROOT_PATH}/rbuscore/build/rbus-core/lib/ -Wl,-rpath-link=${RDK_PROJECT_ROOT_PATH}/rbus/build/src/ -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/
+endif
+
 ifeq ($(USE_KINESIS_PRODUCER), yes)
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/src
 	CFLAGS  +=  -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/amazon-kinesis-video-streams-producer-sdk-cpp/src/common

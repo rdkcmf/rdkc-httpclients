@@ -7,6 +7,7 @@
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/watchdog.h>
+#include "telemetry_busmessage_sender.h"
 #include "watchDogTimer.h"
 
 #include "rdk_debug.h"
@@ -242,6 +243,19 @@ bool watchDogTimer::start()
 		sprintf(logString, "%d-%02d-%02dT%02d:%02d:%02dGMT PreviousRebootReason: watchDog-", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 		flagToString(flags, logString+strlen(logString));
 		RDK_LOG(RDK_LOG_INFO,"LOG.RDK.WATCHDOG","%s\n", logString);
+                t2_event_d("SYS_REBOOT_WDKeepAlive", 1);
+                t2_event_d("SYS_REBOOT_WDCloseChar", 1);
+                t2_event_d("SYS_REBOOT_WDTO", 1);
+                t2_event_d("SYS_REBOOT_WDExtrnlAlarm", 1);
+                t2_event_d("SYS_REBOOT_WDCPUOverHeat", 1);
+                t2_event_d("SYS_REBOOT_WDFanFail", 1);
+                t2_event_d("SYS_REBOOT_WDExtrnlRelay", 1);
+                t2_event_d("SYS_REBOOT_WDPwrFault", 1);
+                t2_event_d("SYS_REBOOT_WDCpuReset", 1);
+                t2_event_d("SYS_REBOOT_WDOverVoltage", 1);
+                t2_event_d("SYS_REBOOT_WDPreTO", 1);
+                t2_event_d("SYS_REBOOT_WDTimerOff", 1);
+
 		FILE* fp = fopen("/opt/logs/rebootInfo.log", "w");
 		fprintf(fp, "%s", logString);
 		fclose(fp);

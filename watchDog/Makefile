@@ -20,6 +20,8 @@
 CURRENTPATH = $(PWD)
 USE_WATCHDOG = yes
 USE_BREAKPAD = yes
+USE_LIBSYSWRAPPER = yes
+USE_TELEMETRY_2 = yes
 
 include ${RDK_PROJECT_ROOT_PATH}/utility/AppsRule.mak
 
