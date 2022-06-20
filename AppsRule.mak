@@ -66,6 +66,15 @@ ifeq ($(USE_HTTPCLIENT), yes)
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/utility/httpclient -lhttpclient
 endif
 
+ifeq ($(USE_RBUS), yes)
+	USE_RTMESSAGE = yes
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/rbus/include
+	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/rbuscore/rbus-core/include
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lmsgpackc
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rbuscore/build/rbus-core/lib -lrbus-core
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rbus/build/src -lrbus
+endif
+
 ifeq ($(USE_RTMESSAGE), yes)
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage
 	ifeq ($(USE_DATAPROVIDER), no)
