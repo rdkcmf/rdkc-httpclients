@@ -77,12 +77,7 @@ endif
 
 ifeq ($(USE_RTMESSAGE), yes)
 	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage
-	ifeq ($(USE_DATAPROVIDER), no)
-       LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src
-	else
-		CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/dataProvider/
-        LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -ldataProvider
-	endif
+	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
 endif
 

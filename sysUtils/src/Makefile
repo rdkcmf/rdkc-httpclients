@@ -32,19 +32,17 @@ RELEASE_TARGET = libsysutils.so
 DEBUG_TARGET = libsysutils_debug.so
 
 SYSUTIL_SRCS  = sysUtils.c
-SYSUTIL_CPP_SRCS = dmcliUtils.cpp
 
 OBJS_SYSUTIL = $(SYSUTIL_SRCS:.c=.o)
-OBJS_CPP_SYSUTIL = $(SYSUTIL_CPP_SRCS:.cpp=.o)
 
 RM = rm -f
 all: $(RELEASE_TARGET) $(DEBUG_TARGET) install
 
-$(RELEASE_TARGET): $(OBJS_SYSUTIL) $(OBJS_CPP_SYSUTIL)
+$(RELEASE_TARGET): $(OBJS_SYSUTIL)
 	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
 	$(STRIP) $(RELEASE_TARGET)
 
-$(DEBUG_TARGET): $(OBJS_SYSUTIL) $(OBJS_CPP_SYSUTIL)
+$(DEBUG_TARGET): $(OBJS_SYSUTIL)
 	$(CXX) -shared $(LDFLAGS) $^ -o $@ -lrt
 
 %.o:%.c
@@ -61,7 +59,7 @@ install:
 uninstall:
 	$(RM) -f $(RDK_PROJECT_ROOT_PATH)/sdk/fsroot/ramdisk/usr/lib/$(RELEASE_TARGET)
 clean:
-	${RM} ${RELEASE_TARGET} $(DEBUG_TARGET) ${OBJS_SYSUTIL} ${OBJS_CPP_SYSUTIL}
+	${RM} ${RELEASE_TARGET} $(DEBUG_TARGET) ${OBJS_SYSUTIL}
 
 .PHONY: all clean
 
