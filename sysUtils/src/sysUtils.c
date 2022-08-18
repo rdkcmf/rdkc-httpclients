@@ -483,7 +483,9 @@ int getCameraVersionNum(char* version_num)
 
         while (getline(&file_buffer,&max_line_length,fp) != -1)
         {
-                /* find the imagename string */
+                /* find the VERSION string */
+                if(strstr(file_buffer,"YOCTO_VERSION") || strstr(file_buffer,"SDK_VERSION") || strstr(file_buffer,"GST_VERSION"))
+                  continue;
                 locate_1 = strstr(file_buffer,"VERSION");
                 if(locate_1)
                 {
