@@ -32,7 +32,7 @@
 #define DELIMITTER '.'
 #define RDKC_TRUE "true"
 #define RDKC_FALSE "false"
-#define RFC_PATH "/opt/RFC"
+#define RFC_PATH "/opt/secure/RFC"
 
 /* ------------------- IV ---------------------- */
 #define IVENGINE "IVEngine"
