@@ -19,7 +19,7 @@
 <environment>
   <components>
     <utility>
-      <dependencies>sdk,log4c,rdklogger,curl,zlib-1.2.11,rtmessage,libexchanger,telemetry</dependencies>
+      <dependencies>sdk,log4c,rdklogger,curl,zlib-1.2.11,rbus,libexchanger,telemetry</dependencies>
       <is_coverity_supported>True</is_coverity_supported>
     </utility>
   </components>

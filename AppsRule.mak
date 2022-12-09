@@ -44,9 +44,9 @@ endif
 ifeq ($(USE_SSHUTIL), yes)
     CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/rdklogger/include
     CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/opensource/include
-    CFLAGS     += -I${RDK_PROJECT_ROOT_PATH}/opensource/src/rtmessage
+    CFLAGS     += -I${RDK_FSROOT_PATH}/usr/include/rtmessage
     CFLAGS 	+= -I${RDK_PROJECT_ROOT_PATH}/libexchanger/src
-    LIBFLAGS = -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/password/src
+    LIBFLAGS = -L${RDK_FSROOT_PATH}/usr/lib -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/password/src
     LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src -lspake2plus
     LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lssl -lcrypto
     LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
@@ -68,16 +68,15 @@ endif
 
 ifeq ($(USE_RBUS), yes)
 	USE_RTMESSAGE = yes
-	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/rbus/include
-	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/rbuscore/rbus-core/include
+	CFLAGS  += -I${RDK_FSROOT_PATH}/usr/include
+	CFLAGS  += -I${RDK_FSROOT_PATH}/usr/include/rbus
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lmsgpackc
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rbuscore/build/rbus-core/lib -lrbus-core
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/rbus/build/src -lrbus
+	LIBFLAGS += -L${RDK_FSROOT_PATH}/usr/lib -lrbuscore -lrbus
 endif
 
 ifeq ($(USE_RTMESSAGE), yes)
-	CFLAGS  += -I$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage
-	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/src/rtmessage/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src
+	CFLAGS  += -I${RDK_FSROOT_PATH}/usr/include/rtmessage
+	LIBFLAGS += -L${RDK_FSROOT_PATH}/usr/lib/ -lrtMessage -Wl,-rpath-link=$(RDK_PROJECT_ROOT_PATH)/libexchanger/Release/src
 	LIBFLAGS += -L$(RDK_PROJECT_ROOT_PATH)/opensource/lib -lcjson
 endif
 
